@@ -1,0 +1,7 @@
+* -text
+*.epi binary
+*.png binary
+*.jpg binary
+*.woff2 binary
+*.html text eol=lf
+*.json text eol=lf

@@ -1,6 +1,6 @@
 COME METTERE IL SITO ONLINE SU GITHUB PAGES
 ===========================================
-Preparato il 16/09/2026 alle 13:10.
+Preparato il 16/09/2026 alle 13:30.
 Cartella da caricare: "sito-github" (accanto a questo file).
 Peso complessivo: 689.8 MB.
 
@@ -15,7 +15,7 @@ Serve una volta sola: un conto su github.com e Git installato
 
 LA PRIMA VOLTA
 --------------
-1. Su github.com crea un deposito nuovo, per esempio "centuripe-epigrafica".
+1. Su github.com crea un deposito nuovo, per esempio "centuripeepigrafica".
    Lascialo vuoto: niente README, niente licenza.
 
 2. Apri il Prompt dei comandi dentro la cartella "sito-github":
@@ -27,16 +27,16 @@ LA PRIMA VOLTA
    git branch -M main
    git add -A
    git commit -m "Prima versione del sito"
-   git remote add origin https://github.com/TUONOME/centuripe-epigrafica.git
+   git remote add origin https://github.com/Nemoxis/centuripeepigrafica.git
    git push -u origin main
 
-   (al posto di TUONOME e del nome del deposito metti i tuoi)
+   (se un giorno cambi deposito, cambia quella riga)
 
 4. Su github.com, nel deposito: Settings > Pages >
    Source: "Deploy from a branch" > Branch: main, cartella /(root) > Save.
 
 5. Dopo un paio di minuti il sito e' su
-   https://TUONOME.github.io/centuripe-epigrafica/
+   https://nemoxis.github.io/centuripeepigrafica/
 
 
 LE VOLTE SUCCESSIVE
@@ -59,6 +59,7 @@ i comandi qui sopra continuano a funzionare. Non spostare la cartella.
 
 COSA C'E' DENTRO
 ----------------
+  .git/              147 file, 374.0 MB
   anteprime/         32 file, 11.5 MB
   epigrafi/          63 file, 676.3 MB
   index.html         0.1 MB

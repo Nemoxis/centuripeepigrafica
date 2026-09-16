@@ -1703,13 +1703,15 @@ async function caricaModello(m){
   svuota();
   try{
     let materiali = null;
-    if (m.mtl){
+    // il .mtl e' un di piu': se manca (online non viene pubblicato) o non si
+    // carica, il pezzo si vede lo stesso, con la sua texture
+    if (m.mtl) try{
       const mp = m.mtl.split('/');
       const file = mp.pop();
       const dir = RADICE + (mp.length ? encodeURI(mp.join('/')) + '/' : '');
       materiali = await new MTLLoader().setPath(dir).loadAsync(encodeURIComponent(file));
       materiali.preload();
-    }
+    }catch(e){ materiali = null; console.warn('.mtl non caricato, tiro dritto', e); }
     const op = m.obj.split('/');
     const ofile = op.pop();
     const odir = RADICE + (op.length ? encodeURI(op.join('/')) + '/' : '');
