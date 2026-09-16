@@ -1,0 +1,2228 @@
+<!DOCTYPE html>
+<html lang="it" data-dev="off">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Epigrafi Centuripine · Archivio 3D</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230e1013'/%3E%3Cpath d='M9 8h14M9 14h10M9 20h13M9 26h8' stroke='%23d59a52' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+/* ═══════════════════════════════════════════════════════════════════
+   Impaginazione nella lingua visiva della Fondazione CHANGES:
+   DM Sans, fondo avorio, nero pieno, verde e albicocca a blocchi,
+   forme a pillola generose.
+   ═══════════════════════════════════════════════════════════════════ */
+@font-face{font-family:"DM Sans";src:url("lib/font/dm-sans-latin-400-normal.woff2") format("woff2");
+  font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:"DM Sans";src:url("lib/font/dm-sans-latin-400-italic.woff2") format("woff2");
+  font-weight:400;font-style:italic;font-display:swap}
+@font-face{font-family:"DM Sans";src:url("lib/font/dm-sans-latin-500-normal.woff2") format("woff2");
+  font-weight:500;font-style:normal;font-display:swap}
+@font-face{font-family:"DM Sans";src:url("lib/font/dm-sans-latin-700-normal.woff2") format("woff2");
+  font-weight:700;font-style:normal;font-display:swap}
+
+:root{
+  --carta:#f5f4f2;
+  --carta-2:#ffffff;
+  --carta-3:#eceae6;
+  --inchiostro:#020304;
+  --inchiostro-2:#404040;
+  --inchiostro-3:#8a8a86;
+  --filo:#dcdad5;
+  --filo-2:#c4c1ba;
+  --verde:#00a769;
+  --verde-cupo:#339967;
+  --albicocca:#f3c696;
+  --terracotta:#d05246;
+  --blu:#293c5b;
+  --rubrica:var(--verde);
+  --rubrica-su:#ffffff;
+  --velo:rgba(245,244,242,.95);
+  --velo-0:rgba(245,244,242,0);
+  --ombra-pezzo:rgba(20,22,20,.22);
+  --piano:#eceae6;
+  --piano-2:#e2dfd9;
+  --grana:0;
+  --tavolo:#020304;
+  --tavolo-2:#121314;
+  --tavolo-filo:#2c2e30;
+  --tavolo-ink:#f5f4f2;
+  --tavolo-ink-2:#9b9d9c;
+  --tondo:32px;          /* le tessere */
+  --pillola:999px;       /* tutto ciò che si preme */
+  --sans:"DM Sans",ui-sans-serif,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --serif:var(--sans);
+}
+:root[data-tema="scuro"]{
+  --carta:#020304;
+  --carta-2:#121314;
+  --carta-3:#1b1c1d;
+  --inchiostro:#f5f4f2;
+  --inchiostro-2:#b9bab8;
+  --inchiostro-3:#7d7f7e;
+  --filo:#24262a;
+  --filo-2:#3a3d41;
+  --velo:rgba(2,3,4,.95);
+  --velo-0:rgba(2,3,4,0);
+  --ombra-pezzo:rgba(0,0,0,.65);
+  --piano:#151617;
+  --piano-2:#0b0c0d;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-tema="chiaro"]){
+    --carta:#020304;
+    --carta-2:#121314;
+    --carta-3:#1b1c1d;
+    --inchiostro:#f5f4f2;
+    --inchiostro-2:#b9bab8;
+    --inchiostro-3:#7d7f7e;
+    --filo:#24262a;
+    --filo-2:#3a3d41;
+    --velo:rgba(2,3,4,.95);
+    --velo-0:rgba(2,3,4,0);
+    --ombra-pezzo:rgba(0,0,0,.65);
+    --piano:#151617;
+    --piano-2:#0b0c0d;
+  }
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+
+/* ─────────────── barra di scorrimento ───────────────
+   Stessa lingua del resto: fondo avorio, cursore a pillola nel colore
+   dell'inchiostro, verde quando ci passi sopra. */
+html{
+  scrollbar-width:thin;                               /* Firefox */
+  scrollbar-color:var(--filo-2) transparent;
+}
+*::-webkit-scrollbar{width:12px;height:12px}
+*::-webkit-scrollbar-track{background:transparent}
+*::-webkit-scrollbar-thumb{
+  background:var(--filo-2);
+  border-radius:var(--pillola);
+  border:3px solid var(--carta);                      /* aria attorno al cursore */
+}
+*::-webkit-scrollbar-thumb:hover{background:var(--inchiostro-3)}
+*::-webkit-scrollbar-thumb:active{background:var(--verde)}
+*::-webkit-scrollbar-corner{background:transparent}
+
+/* dentro le schede chiare su fondo scuro (la guida, i pannelli) il bordino
+   del cursore prende il colore della scheda, non quello della pagina */
+.guida-carta::-webkit-scrollbar-thumb,
+.setup::-webkit-scrollbar-thumb{border-color:var(--carta)}
+
+/* sul palco del visualizzatore, che e' sempre scuro, la barra si adegua */
+#vista{scrollbar-color:var(--tavolo-filo) transparent}
+#vista ::-webkit-scrollbar-thumb{
+  background:var(--tavolo-filo);border-color:var(--tavolo);
+}
+#vista ::-webkit-scrollbar-thumb:hover{background:var(--tavolo-ink-2)}
+body{
+  background:var(--carta);
+  color:var(--inchiostro);
+  font:400 16px/1.55 var(--sans);
+  -webkit-text-size-adjust:100%;
+  -webkit-font-smoothing:antialiased;
+  overflow-wrap:break-word;
+}
+button,input{font:inherit;color:inherit}
+::selection{background:var(--verde);color:#fff}
+
+.wrap{width:100%;max-width:1280px;margin:0 auto;padding-inline:clamp(18px,4vw,48px)}
+
+#galleria{position:relative;min-height:100dvh;display:flex;flex-direction:column}
+#galleria::after{content:none}
+#galleria>*{position:relative;z-index:1}
+
+/* ─────────────── testata ─────────────── */
+/* La testata si comporta come una schermata: occupa l'altezza della finestra
+   e ci sta dentro, senza tagliare niente, a qualunque formato. */
+.hero{padding-block:clamp(22px,3vw,40px) clamp(18px,2.4vw,28px)}
+@media (min-width:1000px){
+  .hero{
+    min-height:100svh;display:flex;flex-direction:column;justify-content:center;
+    padding-block:clamp(18px,2.6vw,34px) clamp(18px,2.4vw,30px);
+  }
+  .hero .marchi-alto{margin-bottom:clamp(16px,2.4vw,32px)}
+  .hero h1{font-size:clamp(38px,min(6.4vw,10svh),76px)}
+  .hero-testo p{font-size:clamp(15px,min(1.35vw,2.1svh),17.5px)}
+}
+/* finestre basse e larghe: il testo si stringe invece di sfondare */
+@media (min-width:1000px) and (max-height:760px){
+  .hero{min-height:0}
+  .hero h1{font-size:clamp(34px,5.2vw,54px)}
+  .hero-testo p{margin-top:14px}
+  .meta{margin-top:20px}
+}
+
+/* i marchi in cima alla pagina */
+.marchi-alto{
+  display:flex;align-items:center;gap:clamp(14px,2vw,24px);flex-wrap:wrap;
+  margin-bottom:clamp(24px,3.4vw,40px);
+}
+.marchi-alto a{display:block;line-height:0;transition:opacity .18s ease}
+.marchi-alto a:hover{opacity:.62}
+.marchi-alto img{display:block;width:auto;height:clamp(26px,2.6vw,32px);object-fit:contain}
+.marchi-alto img.spoke{height:clamp(22px,2.2vw,27px)}
+.marchi-alto img.unict{height:clamp(28px,2.9vw,36px)}
+.marchi-alto .marchi-sep{width:1px;height:26px;background:var(--filo-2)}
+
+/* testata a due colonne: testo a sinistra, vetrina a destra */
+.hero-in{display:grid;grid-template-columns:1fr;gap:clamp(26px,3vw,44px);align-items:center}
+@media (min-width:1000px){
+  .hero-in{grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:clamp(34px,4vw,64px)}
+}
+.hero-testo{min-width:0}
+
+/* da tablet in su la vetrina sta sopra al testo */
+.vetrina{min-width:0;display:flex;flex-direction:column;gap:12px;order:-1;max-width:460px;margin-inline:auto;width:100%}
+@media (min-width:1000px){ .vetrina{order:0;max-width:none;margin-inline:0} }
+@media (max-width:759px){ .vetrina{display:none} }   /* sul telefono non compare */
+.vetrina-piano{
+  position:relative;width:100%;aspect-ratio:16/11;
+  background:none;border:0;box-shadow:none;overflow:visible;
+  /* mai piu' alta di quanto la finestra conceda: cosi' non viene tagliata */
+  max-width:calc(42svh * 16 / 11);margin-inline:auto;
+}
+@media (min-width:1000px){
+  .vetrina-piano{aspect-ratio:1/1;max-width:min(100%, 62svh);margin-inline:auto}
+}
+.vetrina-piano canvas,.vetrina-piano img{
+  position:absolute;inset:0;width:100%;height:100%;display:block;
+  transition:opacity .5s ease;
+}
+.vetrina-piano img{object-fit:contain;padding:2%;opacity:1}
+.vetrina-piano canvas{opacity:0}
+.vetrina.viva .vetrina-piano img{opacity:0}
+.vetrina.viva .vetrina-piano canvas{opacity:1}
+.vetrina.cambio .vetrina-piano canvas,
+.vetrina.cambio .vetrina-piano img{opacity:0}
+.vetrina-nome{
+  display:flex;align-items:baseline;gap:10px;min-height:20px;
+  font:500 12px/1.5 var(--sans);letter-spacing:.02em;color:var(--inchiostro-3);
+}
+.vetrina-nome b{font-weight:700;color:var(--inchiostro-2);font-size:13px}
+@media (prefers-reduced-motion:reduce){ .vetrina-piano canvas{display:none} }
+
+.occhiello{
+  display:inline-block;padding:7px 16px;border-radius:var(--pillola);
+  background:var(--verde);color:#fff;
+  font:700 11px/1.3 var(--sans);letter-spacing:.1em;text-transform:uppercase;
+  margin-bottom:26px;
+}
+.hero h1{
+  margin:0;font-weight:700;
+  font-size:clamp(42px,7.4vw,84px);line-height:1.02;letter-spacing:-.03em;
+}
+.hero h1 em{font-style:normal;color:var(--verde)}
+.hero p{
+  margin:22px 0 0;max-width:52ch;color:var(--inchiostro-2);
+  font-size:clamp(15.5px,1.5vw,18px);line-height:1.62;
+}
+.meta{
+  display:flex;flex-wrap:wrap;gap:8px 28px;margin-top:32px;padding-top:16px;
+  border-top:1px solid var(--filo);
+  font:500 12px/1.6 var(--sans);letter-spacing:.02em;color:var(--inchiostro-3);
+}
+.meta b{color:var(--inchiostro-2);font-weight:700}
+
+#tasto-carosello{
+  position:absolute;z-index:40;top:clamp(18px,3vw,30px);right:clamp(18px,4vw,48px);
+  display:inline-flex;align-items:center;gap:10px;
+  padding:13px 24px;border-radius:var(--pillola);cursor:pointer;white-space:nowrap;
+  font:700 13px/1 var(--sans);letter-spacing:.01em;
+  color:var(--carta);background:var(--inchiostro);border:0;
+  transition:background .2s,transform .2s;
+}
+#tasto-carosello:hover{background:var(--verde);transform:translateY(-1px)}
+#tasto-carosello svg{display:block}
+
+/* ─────────────── filtri ─────────────── */
+.filtri{
+  position:sticky;top:0;z-index:30;padding-block:12px;
+  background:linear-gradient(180deg,var(--velo) 74%,var(--velo-0));
+}
+.filtri-in{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.chip{
+  padding:9px 18px;border-radius:var(--pillola);border:1px solid var(--filo);
+  background:var(--carta-2);color:var(--inchiostro-2);cursor:pointer;
+  font:500 13px/1.3 var(--sans);white-space:nowrap;
+  transition:color .16s,border-color .16s,background .16s;
+  -webkit-tap-highlight-color:transparent;
+}
+.chip:hover{color:var(--inchiostro);border-color:var(--filo-2)}
+.chip[aria-pressed="true"]{
+  color:var(--carta);background:var(--inchiostro);border-color:var(--inchiostro);font-weight:700;
+}
+.chip.tema{display:inline-flex;align-items:center;gap:8px}
+.chip.tema svg{display:block}
+.chip.tema .i-sole{display:none}
+.chip.tema .i-luna{display:block}
+@media (prefers-color-scheme: dark){
+  :root:not([data-tema="chiaro"]) .chip.tema .i-sole{display:block}
+  :root:not([data-tema="chiaro"]) .chip.tema .i-luna{display:none}
+}
+:root[data-tema="chiaro"] .chip.tema .i-sole{display:none}
+:root[data-tema="chiaro"] .chip.tema .i-luna{display:block}
+:root[data-tema="scuro"] .chip.tema .i-sole{display:block}
+:root[data-tema="scuro"] .chip.tema .i-luna{display:none}
+.cerca{position:relative;margin-left:auto;flex:1 1 200px;max-width:280px}
+.cerca input{
+  width:100%;padding:9px 16px 9px 38px;border-radius:var(--pillola);
+  border:1px solid var(--filo);background:var(--carta-2);color:inherit;
+  font:400 14px/1.4 var(--sans);outline:none;transition:border-color .16s;
+}
+.cerca input::placeholder{color:var(--inchiostro-3)}
+.cerca input:focus{border-color:var(--verde)}
+.cerca svg{position:absolute;left:15px;top:50%;transform:translateY(-50%);color:var(--inchiostro-3);pointer-events:none}
+
+/* ─────────────── tessere ─────────────── */
+main{flex:1;padding-bottom:80px}
+.sez-tit{display:flex;align-items:center;gap:14px;margin:40px 0 20px}
+.sez-tit h2{
+  margin:0;font:700 clamp(19px,2.2vw,26px)/1.2 var(--sans);letter-spacing:-.02em;
+  color:var(--inchiostro);white-space:nowrap;
+}
+.sez-tit i{flex:1;height:1px;background:var(--filo)}
+.sez-tit b{
+  font:700 12px/1 var(--sans);color:var(--carta);background:var(--inchiostro);
+  border-radius:var(--pillola);padding:5px 11px;font-variant-numeric:tabular-nums;
+}
+
+.griglia{
+  display:grid;gap:clamp(16px,2vw,26px);
+  grid-template-columns:repeat(auto-fill,minmax(min(230px,100%),1fr));
+}
+.pezzo{
+  position:relative;display:flex;flex-direction:column;text-align:left;cursor:pointer;
+  padding:0;border:0;background:transparent;color:inherit;
+  -webkit-tap-highlight-color:transparent;
+}
+.scena{
+  position:relative;aspect-ratio:1/1;display:grid;place-items:center;padding:20px 20px 26px;
+  background:var(--piano);border-radius:var(--tondo);overflow:hidden;
+  transition:background .25s;
+}
+.scena::after{
+  content:"";position:absolute;left:20%;right:20%;bottom:11%;height:14px;border-radius:50%;
+  background:radial-gradient(50% 50% at 50% 50%, var(--ombra-pezzo), transparent 70%);
+}
+.scena img{
+  position:relative;z-index:1;max-width:100%;max-height:100%;object-fit:contain;display:block;
+  filter:drop-shadow(0 14px 18px var(--ombra-pezzo));
+  transition:transform .45s cubic-bezier(.2,.75,.3,1);
+}
+.pezzo:hover .scena{background:var(--albicocca)}
+:root[data-tema="scuro"] .pezzo:hover .scena{background:#1f2220}
+.pezzo:hover .scena img{transform:scale(1.04)}
+.pezzo:focus-visible .scena{outline:3px solid var(--verde);outline-offset:3px}
+.ghost{display:grid;place-items:center;gap:10px;color:var(--inchiostro-3);text-align:center}
+.ghost svg{opacity:.4}
+.ghost span{font:500 11.5px/1.4 var(--sans)}
+
+.dati{padding:13px 4px 0;display:flex;align-items:baseline;gap:10px}
+.dati-txt{min-width:0;flex:1}
+.pezzo h3{margin:0;font:700 18px/1.25 var(--sans);letter-spacing:-.02em}
+.pezzo:hover h3{color:var(--verde)}
+.pezzo small{
+  display:block;margin-top:4px;font:500 12px/1.4 var(--sans);color:var(--inchiostro-3);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.pezzo small.isic{color:var(--verde);font-weight:700}
+.num{
+  flex:0 0 auto;font:700 11px/1 var(--sans);color:var(--inchiostro-3);
+  font-variant-numeric:tabular-nums;padding-top:5px;
+}
+.pezzo:hover .num{color:var(--verde)}
+.freccia{display:none}
+.pesante-b{
+  position:absolute;top:12px;right:12px;z-index:3;
+  font:700 10.5px/1 var(--sans);border-radius:var(--pillola);
+  padding:7px 12px;color:#fff;background:var(--terracotta);
+}
+.niente{padding:80px 0;text-align:center;color:var(--inchiostro-3)}
+
+/* ─────────────── avvisi di servizio ─────────────── */
+:root[data-dev="off"] .dev{display:none!important}
+.avviso[hidden]{display:none}
+.avviso{
+  display:grid;gap:16px;margin:28px 0 6px;padding:24px 26px;
+  border-radius:var(--tondo);background:var(--albicocca);color:#2a1d0e;
+}
+:root[data-tema="scuro"] .avviso{background:#26211a;color:var(--inchiostro)}
+@media (prefers-color-scheme: dark){
+  :root:not([data-tema="chiaro"]) .avviso{background:#26211a;color:var(--inchiostro)}
+  :root:not([data-tema="chiaro"]) .pezzo:hover .scena{background:#1f2220}
+  :root:not([data-tema="chiaro"]) .bottone.primo{background:var(--verde);border-color:var(--verde);color:#fff}
+}
+@media (min-width:860px){
+  .avviso{grid-template-columns:1fr auto;align-items:center;gap:16px 34px}
+}
+.avviso .txt{min-width:0}
+.avviso b{display:block;font:700 21px/1.25 var(--sans);letter-spacing:-.02em;margin:0 0 6px}
+.avviso span{display:block;font-size:15px;line-height:1.55;max-width:68ch;opacity:.86}
+.avviso .nomi{display:inline;font-weight:700;opacity:1}
+.avviso .azioni{display:flex;gap:9px;flex-wrap:wrap}
+.avviso .badge-dev,.badge-dev{
+  display:inline-block;width:fit-content;margin:0 0 12px;border-radius:var(--pillola);
+  font:700 10px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;
+  color:#fff;background:var(--terracotta);padding:6px 12px;
+}
+.bottone{
+  padding:11px 20px;border-radius:var(--pillola);cursor:pointer;white-space:nowrap;
+  border:1px solid currentColor;background:transparent;color:inherit;
+  font:700 13px/1.3 var(--sans);transition:background .16s,color .16s,border-color .16s;
+}
+.bottone:hover{background:color-mix(in srgb, currentColor 12%, transparent)}
+.bottone.primo{background:var(--inchiostro);color:var(--carta);border-color:var(--inchiostro)}
+.bottone.primo:hover{background:var(--verde);border-color:var(--verde);color:#fff}
+:root[data-tema="scuro"] .bottone.primo{background:var(--verde);border-color:var(--verde);color:#fff}
+.chip.dev-tasto{border-style:dashed}
+
+.scheda{padding-block:clamp(34px,4vw,54px) 0}
+.scheda h2{
+  margin:0 0 22px;font:700 clamp(24px,3.2vw,38px)/1.1 var(--sans);letter-spacing:-.03em;
+}
+.scheda-corpo{display:grid;gap:clamp(22px,3vw,44px)}
+@media (min-width:900px){ .scheda-corpo{grid-template-columns:1.45fr .85fr} }
+.scheda-corpo p{
+  margin:0 0 15px;font-size:clamp(15.5px,1.4vw,17px);line-height:1.66;color:var(--inchiostro-2);
+}
+.scheda-corpo p b{color:var(--inchiostro);font-weight:700}
+.dati-tecnici{
+  margin:0;padding:24px 26px;border-radius:var(--tondo);background:var(--carta-3);
+  display:grid;grid-template-columns:auto 1fr;gap:9px 18px;align-content:start;
+}
+.dati-tecnici dt{
+  font:700 11px/1.5 var(--sans);letter-spacing:.06em;text-transform:uppercase;
+  color:var(--inchiostro-3);
+}
+.dati-tecnici dd{margin:0;font:500 14.5px/1.5 var(--sans);color:var(--inchiostro)}
+
+.firme{
+  list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:10px;
+}
+.firme li{
+  padding:11px 22px;border-radius:var(--pillola);background:var(--carta-3);
+  font:700 16px/1.2 var(--sans);letter-spacing:-.01em;
+  display:flex;align-items:baseline;gap:9px;
+}
+.firme li span,.firme li .dove{
+  font:700 10.5px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;
+  color:var(--inchiostro-3);
+}
+.firme li a{color:inherit;text-decoration:none;border-bottom:1.5px solid var(--verde);padding-bottom:1px}
+.firme li a:hover{color:var(--verde)}
+.firme li .dove{border-bottom-color:var(--filo-2)}
+.firme li .dove:hover{color:var(--inchiostro-2);border-bottom-color:var(--inchiostro-3)}
+
+.pie{
+  border-top:1px solid var(--filo);margin-top:clamp(34px,4vw,54px);padding-block:26px 40px;
+  color:var(--inchiostro-3);font-size:14.5px;line-height:1.7;
+}
+.pie kbd{
+  font:700 11.5px/1 var(--sans);padding:5px 8px;border-radius:7px;
+  background:var(--carta-3);color:var(--inchiostro-2);
+}
+.pie b{font-weight:700;color:var(--inchiostro-2)}
+
+/* ═══════════════ il tavolo di studio ═══════════════ */
+#vista{position:fixed;inset:0;z-index:100;background:var(--tavolo);display:none;color:var(--tavolo-ink)}
+#vista.on{display:block}
+body.fermo{overflow:hidden}
+#palco{position:absolute;inset:0;touch-action:none}
+#palco canvas{display:block;width:100%;height:100%}
+.vignetta{
+  position:absolute;inset:0;pointer-events:none;z-index:1;
+  background:radial-gradient(76% 66% at 50% 44%, transparent 46%, rgba(0,0,0,.42) 100%);
+}
+.vetro{background:rgba(18,19,20,.88);border:1px solid var(--tavolo-filo);backdrop-filter:blur(10px)}
+.v-alto{
+  position:absolute;z-index:3;left:0;right:0;
+  top:max(14px,env(safe-area-inset-top));
+  padding-inline:16px;display:flex;gap:10px;align-items:flex-start;pointer-events:none;
+}
+.v-alto>*{pointer-events:auto}
+.v-nome{padding:11px 20px;min-width:0;flex:0 1 auto;border-radius:var(--pillola)}
+.v-nome b{display:block;font:700 16px/1.2 var(--sans);letter-spacing:-.01em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.v-nome small{display:block;margin-top:2px;font:500 12px/1.4 var(--sans);color:var(--tavolo-ink-2);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.v-nome small a.isic{color:var(--verde);text-decoration:none;font-weight:700}
+.v-nome small a.isic:hover{text-decoration:underline}
+.car-nome small a.isic{color:var(--verde);text-decoration:none;font-weight:700}
+.spazio{flex:1}
+
+.tb{
+  position:absolute;z-index:3;left:50%;transform:translateX(-50%);
+  bottom:max(16px,env(safe-area-inset-bottom));
+  display:flex;align-items:center;gap:4px;padding:7px;border-radius:var(--pillola);
+  max-width:calc(100vw - 24px);flex-wrap:wrap;justify-content:center;
+}
+.b{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:10px 15px;border-radius:var(--pillola);border:1px solid transparent;background:transparent;
+  color:var(--tavolo-ink-2);cursor:pointer;white-space:nowrap;
+  font:500 13px/1 var(--sans);
+  transition:background .15s,color .15s,border-color .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.b:hover{background:rgba(255,255,255,.08);color:var(--tavolo-ink)}
+.b.acceso{background:var(--verde);color:#fff;border-color:var(--verde);font-weight:700}
+.b.tondo{padding:10px}
+.b svg{display:block;flex:0 0 auto}
+.b.dev{border:1px dashed var(--tavolo-filo)}
+.b.dev.acceso{border-style:solid}
+.etichetta-dev{
+  font:700 9.5px/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;
+  color:var(--tavolo-ink-2);align-self:center;padding:0 7px 0 4px;white-space:nowrap;opacity:.75;
+}
+.divisore{width:1px;align-self:stretch;margin:6px 6px;background:var(--tavolo-filo)}
+.regola{display:flex;align-items:center;gap:10px;padding:0 12px 0 8px;min-width:132px}
+.regola span{font:500 11px/1 var(--sans);color:var(--tavolo-ink-2)}
+input[type=range]{
+  -webkit-appearance:none;appearance:none;flex:1;height:3px;border-radius:99px;
+  background:var(--tavolo-filo);outline:none;min-width:62px;
+}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;
+  background:var(--verde);cursor:pointer}
+input[type=range]::-moz-range-thumb{width:14px;height:14px;border:none;border-radius:50%;
+  background:var(--verde);cursor:pointer}
+
+#velo{
+  position:absolute;inset:0;z-index:4;pointer-events:none;
+  background:var(--tavolo);opacity:0;transition:opacity .45s ease;
+}
+#velo.chiuso{opacity:1}
+#hud{
+  position:absolute;z-index:2;left:20px;bottom:max(20px,env(safe-area-inset-bottom));
+  font:500 11px/1 var(--sans);color:var(--tavolo-ink-2);opacity:.5;
+  font-variant-numeric:tabular-nums;pointer-events:none;
+}
+#carico{
+  position:absolute;inset:0;z-index:5;display:grid;place-items:center;padding:24px;
+  background:var(--tavolo);text-align:center;
+}
+#carico.via{display:none}
+.anello{width:56px;height:56px;margin:0 auto 22px;position:relative}
+.anello svg{transform:rotate(-90deg)}
+.anello circle{fill:none;stroke-width:3}
+.anello .sfondo{stroke:var(--tavolo-filo)}
+.anello .avanti{stroke:var(--verde);stroke-linecap:round;transition:stroke-dashoffset .25s}
+.anello b{position:absolute;inset:0;display:grid;place-items:center;
+  font:700 12px/1 var(--sans);font-variant-numeric:tabular-nums;color:var(--tavolo-ink-2)}
+#carico h4{margin:0 0 8px;font:700 21px/1.2 var(--sans);letter-spacing:-.02em}
+#carico p{margin:0;font-size:14.5px;color:var(--tavolo-ink-2);max-width:40ch}
+#carico p code{font-size:13px;color:var(--tavolo-ink)}
+.rosso{color:#e98a7d!important}
+
+#messaggio{
+  position:absolute;z-index:6;left:50%;transform:translateX(-50%);
+  top:calc(max(14px,env(safe-area-inset-top)) + 70px);
+  max-width:min(48ch,calc(100vw - 32px));border-radius:var(--tondo);
+  padding:14px 20px;font-size:14.5px;line-height:1.5;color:var(--tavolo-ink);display:none;
+}
+#messaggio.on{display:block}
+
+.setup{
+  position:absolute;z-index:4;left:50%;transform:translateX(-50%);
+  top:calc(max(14px,env(safe-area-inset-top)) + 70px);
+  display:none;align-items:center;gap:14px;flex-wrap:wrap;justify-content:center;
+  padding:12px 18px;border-radius:var(--pillola);max-width:calc(100vw - 24px);
+}
+.setup.on{display:flex}
+.setup p{margin:0;font-size:14px;color:var(--tavolo-ink-2);max-width:42ch}
+.setup p b{color:var(--tavolo-ink);font-weight:700}
+.setup .bottone{border-color:var(--tavolo-filo);color:var(--tavolo-ink-2);padding:9px 16px}
+.setup .bottone:hover{color:var(--tavolo-ink);border-color:var(--tavolo-ink-2);background:transparent}
+.setup .bottone.primo{background:var(--verde);border-color:var(--verde);color:#fff}
+
+/* ─────────────── guida del visualizzatore ─────────────── */
+.guida{
+  position:absolute;inset:0;z-index:60;display:none;
+  align-items:center;justify-content:center;padding:24px;
+  background:rgba(2,3,4,.62);backdrop-filter:blur(3px);
+}
+.guida.on{display:flex}
+.guida[hidden]{display:none}
+.guida-carta{
+  width:min(560px,100%);max-height:100%;overflow:auto;
+  background:var(--carta);color:var(--inchiostro);
+  border-radius:var(--tondo);padding:clamp(22px,3vw,34px);
+  box-shadow:0 30px 80px rgba(0,0,0,.45);
+}
+.guida-carta h3{margin:0 0 16px;font-size:clamp(20px,2.4vw,26px);letter-spacing:-.02em}
+.guida-gesti{margin:0 0 18px;padding:0;list-style:none;display:grid;gap:8px}
+.guida-gesti li{
+  padding:10px 16px;border-radius:var(--pillola);background:var(--carta-3);
+  font-size:14.5px;line-height:1.45;
+}
+.guida-gesti b{font-weight:700}
+.guida-intro{margin:0 0 10px;font-size:13px;letter-spacing:.04em;text-transform:uppercase;
+  font-weight:700;color:var(--inchiostro-3)}
+.guida-tasti{margin:0 0 18px;display:grid;grid-template-columns:auto 1fr;gap:7px 16px;align-items:baseline}
+.guida-tasti dt{font-weight:700;font-size:14px;white-space:nowrap}
+.guida-tasti dd{margin:0;font-size:14px;line-height:1.5;color:var(--inchiostro-2)}
+.guida-piede{margin:0 0 20px;font-size:13.5px;line-height:1.9;color:var(--inchiostro-2)}
+.guida-piede kbd{font:700 11.5px/1 var(--sans);padding:5px 8px;border-radius:7px;
+  background:var(--carta-3);color:var(--inchiostro-2)}
+.guida-nota{margin:12px 0 0;font-size:12.5px;color:var(--inchiostro-3)}
+.guida-nota b{color:var(--inchiostro-2)}
+@media (max-width:620px){
+  .guida{padding:14px}
+  .guida-tasti{grid-template-columns:1fr;gap:2px 0}
+  .guida-tasti dd{margin-bottom:8px}
+}
+
+/* ─────────────── carosello ─────────────── */
+.carosello{
+  position:absolute;z-index:5;left:0;right:0;
+  bottom:max(22px,env(safe-area-inset-bottom));
+  display:none;flex-direction:column;align-items:center;gap:16px;padding-inline:16px;
+}
+.carosello.on{display:flex}
+.car-nome{text-align:center;max-width:min(60ch,100%)}
+.car-nome b{display:block;font:700 clamp(22px,3vw,34px)/1.12 var(--sans);letter-spacing:-.03em}
+.car-nome small{display:block;margin-top:6px;font:500 12.5px/1.4 var(--sans);color:var(--tavolo-ink-2)}
+.car-barra{width:min(300px,64vw);height:3px;border-radius:99px;background:var(--tavolo-filo);overflow:hidden}
+.car-barra i{display:block;height:100%;width:0;background:var(--verde)}
+.car-comandi{display:flex;align-items:center;gap:4px;padding:7px;border-radius:var(--pillola)}
+.car-conta{
+  font:700 12px/1 var(--sans);color:var(--tavolo-ink-2);
+  font-variant-numeric:tabular-nums;padding:0 12px;
+}
+#vista.carosello-on .tb,
+#vista.carosello-on #hud,
+#vista.carosello-on .v-nome{display:none}
+
+.etich{display:inline}
+@media (max-width:760px){
+  .etich{display:none}
+  .b{padding:10px 11px}
+  .b.tondo{padding:10px}
+  .etichetta-dev{display:none}
+  .regola{order:9;flex-basis:100%;padding:4px 10px 2px}
+  #hud{display:none}
+  .griglia{grid-template-columns:repeat(auto-fill,minmax(min(150px,100%),1fr));gap:16px 12px}
+  .scena{border-radius:24px;padding:14px 14px 18px}
+  .pezzo h3{font-size:16px}
+  .cerca{margin-left:0;max-width:none;flex-basis:100%;order:-1}
+  #tasto-carosello{position:static;margin:24px 0 0;width:100%;justify-content:center}
+  .hero{padding-top:clamp(26px,5vw,36px)}
+  .avviso{padding:20px}
+}
+/* ─────────────── marchi e banda istituzionale ─────────────── */
+/* i marchi hanno due versioni: positiva su fondo chiaro, negativa su scuro */
+img.neg{display:none!important}
+:root[data-tema="scuro"] img.pos{display:none!important}
+:root[data-tema="scuro"] img.neg{display:block!important}
+@media (prefers-color-scheme:dark){
+  :root:not([data-tema="chiaro"]) img.pos{display:none!important}
+  :root:not([data-tema="chiaro"]) img.neg{display:block!important}
+}
+
+.marchi{
+  display:flex;align-items:center;gap:clamp(18px,3vw,38px);flex-wrap:wrap;
+  margin-top:clamp(26px,3vw,36px);padding-top:clamp(22px,2.6vw,30px);
+  border-top:1px solid var(--filo);
+}
+.marchio{display:block;height:auto;width:auto}
+.marchio img{display:block;width:auto;object-fit:contain}
+.marchio-changes img{height:clamp(38px,4.4vw,52px)}
+.marchio-spoke img{height:clamp(30px,3.4vw,40px)}
+.marchio-unict img{height:clamp(38px,4.4vw,52px)}
+.marchi-sep{width:1px;align-self:stretch;min-height:36px;background:var(--filo-2)}
+
+.finanziamento{
+  margin:18px 0 0;max-width:78ch;font-size:14.5px;line-height:1.65;
+  color:var(--inchiostro-2);
+}
+.finanziamento b{font-weight:700;color:var(--inchiostro)}
+.finanziamento .cup{white-space:nowrap}
+.finanziamento a{color:inherit;text-decoration:none;border-bottom:1.5px solid var(--verde)}
+.finanziamento a:hover{color:var(--verde)}
+
+.banda{border-top:1px solid var(--filo);background:var(--carta-3)}
+.banda-in{padding-block:clamp(18px,2.4vw,26px)}
+.banda-in img{display:block;width:100%;max-width:1020px;margin-inline:auto;height:auto}
+.marchio-testo{
+  font:700 17px/1 var(--sans);letter-spacing:-.02em;color:var(--inchiostro);white-space:nowrap;
+}
+@media (max-width:620px){
+  .banda-in img{max-width:none}
+  .marchi{flex-direction:column;align-items:flex-start;gap:20px}
+  .marchi-sep{display:none}
+  .marchio-changes img{height:44px}
+  .marchio-spoke img{height:40px}
+  .marchio-unict img{height:48px}
+}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<section id="galleria">
+  <header class="hero wrap">
+    <div class="marchi-alto">
+      <a href="https://www.fondazionechanges.org/" target="_blank" rel="noopener" title="Fondazione CHANGES">
+        <img class="pos" src="marchi/changes.png?v=45" alt="Fondazione CHANGES">
+        <img class="neg" src="marchi/changes-neg.png?v=45" alt="" aria-hidden="true">
+      </a>
+      <span class="marchi-sep" aria-hidden="true"></span>
+      <a href="https://www.fondazionechanges.org/spoke-6/" target="_blank" rel="noopener" title="Spoke 6, History, Conservation and Restoration of Cultural Heritage">
+        <img class="pos spoke" src="marchi/spoke6.png?v=45" alt="Spoke 6">
+        <img class="neg spoke" src="marchi/spoke6-neg.png?v=45" alt="" aria-hidden="true">
+      </a>
+      <span class="marchi-sep" aria-hidden="true"></span>
+      <a href="https://www.unict.it/" target="_blank" rel="noopener" title="Università degli Studi di Catania">
+        <img class="pos unict" src="marchi/unict.png?v=45" alt="Università degli Studi di Catania">
+        <img class="neg unict" src="marchi/unict-neg.png?v=45" alt="" aria-hidden="true">
+      </a>
+    </div>
+    <div class="hero-in">
+     <div class="hero-testo">
+    <span class="occhiello">Corpus epigrafico centuripino</span>
+    <h1>Centuripe<br><em>epigrafica</em></h1>
+    <p>Un centinaio di iscrizioni, dal VI secolo a.C. al III d.C., seguono la
+       metamorfosi della città: da centro siculo a città grecofona, poi
+       nell'orbita romana e al suo pieno sviluppo fra I e II secolo. Incise su
+       marmi d'importazione, talvolta arricchite da pigmenti preziosi, portano i
+       nomi delle élites che commissionarono edifici pubblici e tombe
+       monumentali, e nominano strutture che gli scavi non hanno ancora
+       identificato, come il gymnasium.</p>
+    <p>Del corpus solo una parte è rimasta a Centuripe, nelle sale e nei magazzini
+       del Museo archeologico regionale: il resto è distribuito fra Siracusa,
+       Palermo, Adrano e Catania, e altri documenti risultano dispersi. La
+       riproduzione tridimensionale restituisce unità a quell'insieme e lo rende
+       consultabile in un unico spazio, in museo e da remoto.</p>
+    <div class="meta">
+      <span>Pezzi <b id="m-num">-</b></span>
+      <span>Elenco <b id="m-data">-</b></span>
+      <span>Ed. <b>4.6</b></span>
+    </div>
+     </div><!-- /hero-testo -->
+
+     <!-- vetrina: le epigrafi girano qui, in fondo alla pagina, senza comandi -->
+     <div class="vetrina" id="vetrina" aria-hidden="true">
+       <div class="vetrina-piano">
+         <canvas id="tela-vetrina"></canvas>
+         <img id="vetrina-foto" alt="">
+       </div>
+       <div class="vetrina-nome"><b id="vetrina-t"></b><small id="vetrina-s"></small></div>
+     </div>
+    </div><!-- /hero-in -->
+  </header>
+
+  <button id="tasto-carosello" type="button" title="Mostra tutte le epigrafi una dopo l'altra, in rotazione">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 5.5v13l11-6.5z"/></svg>
+    Carosello
+  </button>
+
+  <div class="filtri">
+    <div class="wrap filtri-in" id="filtri">
+      <div class="cerca">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg>
+        <input id="cerca" type="search" placeholder="Cerca un numero d'inventario…" autocomplete="off" spellcheck="false">
+      </div>
+      <button class="chip tema" id="tema" type="button" title="Cambia tema chiaro / scuro" aria-label="Cambia tema chiaro o scuro">
+        <svg class="i-sole" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.5 4.5l1.5 1.5M18 18l1.5 1.5M2.5 12h2M19.5 12h2M4.5 19.5 6 18M18 6l1.5-1.5"/></svg>
+        <svg class="i-luna" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.2A8.2 8.2 0 0 1 9.8 4 8.4 8.4 0 1 0 20 14.2z"/></svg>
+        <span class="etichetta-tema">Chiaro</span>
+      </button>
+      <button class="chip dev-tasto" id="tasto-dev" type="button" aria-pressed="true"
+              title="Mostra o nasconde le funzioni di servizio (orientamento, anteprime): non faranno parte della versione finale">Sviluppo</button>
+    </div>
+  </div>
+
+  <main class="wrap">
+    <div class="avviso" id="avviso" hidden></div>
+    <div id="lista"></div>
+    <div class="niente" id="niente" hidden>Nessun pezzo corrisponde alla ricerca.</div>
+  </main>
+
+  <section class="scheda wrap" id="come">
+    <h2>Com'è stato fatto</h2>
+    <div class="scheda-corpo">
+      <div>
+        <p>Ogni epigrafe è stata rilevata con uno <b>scanner a luce strutturata
+        Artec Eva</b>. Lo strumento proietta sulla pietra una sequenza di trame
+        luminose bianche e riprende con due fotocamere la deformazione che la
+        superficie impone a quelle trame: da quella deformazione ricava, fotogramma
+        per fotogramma, la posizione dei punti nello spazio. Non c'è laser e non
+        c'è contatto: solo luce, del tutto innocua per il materiale e per chi
+        lavora.</p>
+        <p>Lo scanner si muove a mano attorno al pezzo a una distanza di quaranta
+        centimetri circa, riprendendo sedici fotogrammi al secondo; ogni passaggio
+        copre una porzione di superficie, e le porzioni vengono poi allineate fra
+        loro riconoscendo la geometria che hanno in comune. Le riprese sono state
+        fuse in una maglia unica, chiusa nei piccoli vuoti e ripulita dal rumore,
+        e su quella maglia è stata proiettata la fotografia a colori raccolta
+        durante la scansione: è la texture che vedi applicata ai modelli.</p>
+      </div>
+      <dl class="dati-tecnici">
+        <dt>Strumento</dt><dd>Artec Eva</dd>
+        <dt>Tecnica</dt><dd>Luce strutturata bianca, senza contatto</dd>
+        <dt>Risoluzione 3D</dt><dd>fino a 0,2 mm</dd>
+        <dt>Accuratezza del punto</dt><dd>fino a 0,1 mm</dd>
+        <dt>Acquisizione</dt><dd>16 fotogrammi al secondo</dd>
+        <dt>Distanza di lavoro</dt><dd>0,4 – 1 m</dd>
+        <dt>Texture</dt><dd>1,3 megapixel, a colori</dd>
+        <dt>Elaborazione</dt><dd>Artec Studio · allineamento, fusione, texturing</dd>
+        <dt>Formato d'archivio</dt><dd>OBJ con MTL e texture JPEG</dd>
+      </dl>
+    </div>
+  </section>
+
+  <section class="scheda wrap" id="crediti">
+    <h2>Crediti</h2>
+    <ul class="firme">
+      <li><a href="https://web.dmi.unict.it/phd-students/simone.pio.barbagallo" target="_blank" rel="noopener">Simone Pio Barbagallo</a>
+          <a class="dove" href="https://web.dmi.unict.it/" target="_blank" rel="noopener">Unict</a></li>
+      <li><a href="https://www.disum.unict.it/dottorandi/francesca.prado" target="_blank" rel="noopener">Francesca Prado</a>
+          <a class="dove" href="https://www.disum.unict.it/" target="_blank" rel="noopener">Unict</a></li>
+      <li><a href="https://www.disum.unict.it/docenti/orazio.licandro" target="_blank" rel="noopener">Orazio Licandro</a>
+          <a class="dove" href="https://www.disum.unict.it/" target="_blank" rel="noopener">Unict</a></li>
+      <li><a href="https://web.dmi.unict.it/docenti/filippo.stanco" target="_blank" rel="noopener">Filippo Stanco</a>
+          <a class="dove" href="https://web.dmi.unict.it/" target="_blank" rel="noopener">Unict</a></li>
+    </ul>
+
+    <div class="marchi">
+      <a class="marchio marchio-changes" href="https://www.fondazionechanges.org/" target="_blank" rel="noopener">
+        <img class="pos" src="marchi/changes.png?v=45" alt="Fondazione CHANGES">
+        <img class="neg" src="marchi/changes-neg.png?v=45" alt="" aria-hidden="true">
+      </a>
+      <span class="marchi-sep" aria-hidden="true"></span>
+      <span class="marchio marchio-spoke">
+        <img class="pos" src="marchi/spoke6.png?v=45" alt="Spoke 6. History, Conservation and Restoration of Cultural Heritage">
+        <img class="neg" src="marchi/spoke6-neg.png?v=45" alt="" aria-hidden="true">
+      </span>
+      <span class="marchi-sep" aria-hidden="true"></span>
+      <span class="marchio marchio-unict">
+        <img class="pos" src="marchi/unict.png?v=45" alt="Università degli Studi di Catania">
+        <img class="neg" src="marchi/unict-neg.png?v=45" alt="" aria-hidden="true">
+      </span>
+    </div>
+
+    <p class="finanziamento">
+      The research has been supported by
+      <a href="https://www.mur.gov.it/" target="_blank" rel="noopener"><b>MUR</b></a>
+      in the framework of
+      <a href="https://www.italiadomani.gov.it/" target="_blank" rel="noopener"><b>PNRR Mission 4, Component 2, Investment 1.3</b></a>
+      under project
+      <a href="https://www.fondazionechanges.org/" target="_blank" rel="noopener"><b>CHANGES</b></a>,
+      <a href="https://www.fondazionechanges.org/spoke-6/" target="_blank" rel="noopener">Spoke 6</a>
+      <span class="cup">(CUP E63C22001960006)</span>.
+    </p>
+  </section>
+
+
+  <!-- banda istituzionale, secondo le linee guida di comunicazione CHANGES -->
+  <div class="banda">
+    <div class="wrap banda-in">
+      <img class="pos" src="marchi/banda.png?v=45"
+           alt="Finanziato dall'Unione europea NextGenerationEU · Ministero dell'Università e della Ricerca · Italiadomani, Piano nazionale di ripresa e resilienza · Fondazione CHANGES">
+      <img class="neg" src="marchi/banda-neg.png?v=45" alt="" aria-hidden="true">
+    </div>
+  </div>
+</section>
+
+<section id="vista" aria-hidden="true">
+  <!-- guida: compare da sola la prima volta, poi solo col pulsante "?" -->
+  <div class="guida" id="guida" hidden>
+    <div class="guida-carta">
+      <h3>Come si guarda un'epigrafe</h3>
+      <ul class="guida-gesti">
+        <li><b>Trascina</b> per girarle attorno</li>
+        <li><b>Rotella o due dita</b> per avvicinarti</li>
+        <li><b>Tasto destro, o due dita che scorrono</b>, per spostarla</li>
+      </ul>
+      <p class="guida-intro">In basso, i comandi:</p>
+      <dl class="guida-tasti">
+        <dt>Vista</dt><dd>rimette l'inquadratura di partenza</dd>
+        <dt>Texture</dt><dd>toglie la fotografia e lascia la pietra grigia, dove i segni si leggono meglio</dd>
+        <dt>Luce radente</dt><dd>illumina di sbieco: le incisioni consumate vengono fuori</dd>
+        <dt>Maglia</dt><dd>mostra la maglia di triangoli del rilievo</dd>
+        <dt>Giostra</dt><dd>fa girare il pezzo da solo</dd>
+        <dt>⟲ ⟳ ∧ ∨</dt><dd>girano e inclinano il pezzo di un quarto di giro per volta</dd>
+        <dt>Luce</dt><dd>sposta la direzione da cui arriva la luce</dd>
+      </dl>
+      <p class="guida-piede">Da tastiera: <kbd>R</kbd> vista · <kbd>T</kbd> texture · <kbd>L</kbd> luce radente ·
+        <kbd>M</kbd> maglia · <kbd>spazio</kbd> giostra · <kbd>Esc</kbd> chiude.</p>
+      <button class="bottone primo" id="guida-ok">Ho capito</button>
+      <p class="guida-nota">Questo riquadro non ricompare: lo ritrovi con il <b>?</b> in alto.</p>
+    </div>
+  </div>
+  <div id="palco"><div class="vignetta"></div></div>
+
+  <div class="v-alto">
+    <button class="b tondo vetro" id="indietro" title="Torna all'archivio" aria-label="Torna all'archivio" style="border-radius:12px">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <div class="v-nome vetro"><b id="v-t">-</b><small id="v-s"></small></div>
+    <div class="spazio"></div>
+    <button class="b tondo vetro" id="aiuto" title="Come si usa" aria-label="Come si usa" style="border-radius:12px">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 1 1 3.3 2.4c-.6.2-.9.7-.9 1.3v.5"/><path d="M12 16.8h.01"/></svg>
+    </button>
+    <button class="b tondo vetro" id="pieno" title="Schermo intero" aria-label="Schermo intero" style="border-radius:12px">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+    </button>
+  </div>
+
+  <div id="velo"></div>
+  <div id="hud"></div>
+
+  <div class="carosello" id="carosello">
+    <div class="car-nome"><b id="car-t">-</b><small id="car-s"></small></div>
+    <div class="car-barra"><i id="car-avanz"></i></div>
+    <div class="car-comandi vetro">
+      <button class="b tondo" id="car-prec" title="Pezzo precedente" aria-label="Pezzo precedente"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+      <button class="b tondo" id="car-pausa" title="Pausa" aria-label="Pausa"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9.5 5v14M14.5 5v14"/></svg></button>
+      <button class="b tondo" id="car-succ" title="Pezzo successivo" aria-label="Pezzo successivo"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+      <span class="car-conta" id="car-conta"></span>
+      <button class="b" id="car-esci">Esci</button>
+    </div>
+  </div>
+
+  <div class="setup vetro dev" id="setup">
+    <p id="setup-testo"></p>
+    <button class="bottone primo" id="setup-ok">Conferma e avanti</button>
+    <button class="bottone" id="setup-salta">Salta</button>
+    <button class="bottone" id="setup-esci">Esci</button>
+  </div>
+
+  <div class="tb vetro">
+    <button class="b" id="b-vista" title="Reimposta l'inquadratura"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg><span class="etich">Vista</span></button>
+    <button class="b acceso" id="b-tex" title="Fotografia sulla superficie"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="15" rx="2"/><path d="m3 15.5 4.6-4.6 3.7 3.7 3-3L21 17"/></svg><span class="etich">Texture</span></button>
+    <button class="b" id="b-luce" title="Luce radente: fa emergere le incisioni"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.7"/><path d="M12 2.4v2.2M12 19.4v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.4 12h2.2M19.4 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg><span class="etich">Luce radente</span></button>
+    <button class="b" id="b-maglia" title="Maglia poligonale"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 3.5 7.8v8.4L12 21l8.5-4.8V7.8z"/><path d="M3.5 7.8 12 12.6l8.5-4.8M12 12.6V21"/></svg><span class="etich">Maglia</span></button>
+    <button class="b" id="b-giostra" title="Rotazione automatica (tasto spazio)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="12" rx="9.2" ry="4.2"/><path d="M12 4.2v15.6"/><path d="M6.4 8.2 12 12l5.6-3.8"/></svg><span class="etich">Giostra</span></button>
+    <div class="divisore"></div>
+    <button class="b tondo" id="b-sx" title="Ruota il pezzo a sinistra (tasto [ )" aria-label="Ruota il pezzo a sinistra"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.6-6.3"/><path d="M21 3.4V9h-5.6"/></svg></button>
+    <button class="b tondo" id="b-dx" title="Ruota il pezzo a destra (tasto ] )" aria-label="Ruota il pezzo a destra"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 2.6-6.3"/><path d="M3 3.4V9h5.6"/></svg></button>
+    <button class="b tondo" id="b-su" title="Inclina il pezzo in avanti (tasto ; )" aria-label="Inclina in avanti"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15a8 8 0 0 1 16 0"/><path d="M12 3v6"/><path d="m8.6 6.4 3.4-3.4 3.4 3.4"/></svg></button>
+    <button class="b tondo" id="b-giu" title="Inclina il pezzo all'indietro (tasto ' )" aria-label="Inclina all'indietro"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9a8 8 0 0 0 16 0"/><path d="M12 21v-6"/><path d="m8.6 17.6 3.4 3.4 3.4-3.4"/></svg></button>
+    <div class="divisore dev"></div>
+    <span class="etichetta-dev dev">sviluppo</span>
+    <button class="b dev" id="b-retro" title="Mostra la faccia opposta (tasto G)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M8.5 6.5 4 12l4.5 5.5z"/><path d="M15.5 6.5 20 12l-4.5 5.5"/></svg><span class="etich">Retro</span></button>
+    <button class="b dev" id="b-fronte" title="Prende la vista attuale come fronte del pezzo (tasto F)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3.2" y="5" width="17.6" height="14" rx="2"/><path d="M8.4 12h7.2M12 8.4v7.2"/></svg><span class="etich">Fronte qui</span></button>
+    <div class="divisore"></div>
+    <div class="regola"><span>Luce</span><input type="range" id="azimut" min="0" max="360" step="1" value="135" aria-label="Direzione della luce"></div>
+  </div>
+
+  <div id="carico">
+    <div>
+      <div class="anello">
+        <svg width="54" height="54"><circle class="sfondo" cx="27" cy="27" r="24"/><circle class="avanti" id="anello" cx="27" cy="27" r="24" stroke-dasharray="150.8" stroke-dashoffset="150.8"/></svg>
+        <b id="perc">0%</b>
+      </div>
+      <h4 id="c-t">Caricamento</h4>
+      <p id="c-p">Lettura del modello</p>
+    </div>
+  </div>
+</section>
+
+<script type="importmap">
+{ "imports": { "three": "./lib/three.module.js" } }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from './lib/OrbitControls.js';
+import { OBJLoader }     from './lib/OBJLoader.js';
+import { MTLLoader }     from './lib/MTLLoader.js';
+
+const $ = s => document.querySelector(s);
+
+/* ════════ STRUMENTI DI SVILUPPO ════════
+   Orientamento, rassegna guidata, rifacimento anteprime: servono a
+   preparare l'archivio, non a consultarlo. Restano disponibili ma sono
+   marcati, e si possono nascondere: nella versione finale non ci saranno. */
+function applicaDev(){
+  const on = document.documentElement.dataset.dev !== 'off';
+  const t = $('#tasto-dev');
+  if (t) t.setAttribute('aria-pressed', on);
+  return on;
+}
+try{
+  if (localStorage.getItem('dev') === 'off') document.documentElement.dataset.dev = 'off';
+}catch(e){}
+
+/* ════════ TEMA CHIARO / SCURO ════════ */
+const sistemaChiaro = matchMedia('(prefers-color-scheme: light)');
+function temaAttivo(){
+  return document.documentElement.dataset.tema ||
+         (sistemaChiaro.matches ? 'chiaro' : 'scuro');
+}
+function applicaTema(){
+  const chiaro = temaAttivo() === 'chiaro';
+  const et = document.querySelector('.etichetta-tema');
+  if (et) et.textContent = chiaro ? 'Scuro' : 'Chiaro';
+  // il fondo della scena 3D segue il tema
+  const c = getComputedStyle(document.documentElement).getPropertyValue('--palco3d').trim();
+  if (c && typeof scena !== 'undefined') scena.background = new THREE.Color(c);
+}
+try{
+  const salvato = localStorage.getItem('tema');
+  if (salvato === 'chiaro' || salvato === 'scuro') document.documentElement.dataset.tema = salvato;
+}catch(e){}
+sistemaChiaro.addEventListener('change', () => { if (!document.documentElement.dataset.tema) applicaTema(); });
+let RADICE = 'epigrafi/';   // dove stanno i modelli rispetto a questa pagina (lo dice modelli.json)
+let MODELLI = [], gruppoAttivo = '*';
+let ORIENTAMENTI = {};        // correzioni di orientamento salvate su disco
+let FIRME = {};               // con quale orientamento è stata disegnata ogni anteprima
+
+/* ════════ ELENCO DINAMICO ════════ */
+async function carica(){
+  try{
+    const r = await fetch('modelli.json?t=' + Date.now());
+    if (!r.ok) throw new Error(r.status);
+    const d = await r.json();
+    MODELLI = d.modelli || [];
+    RADICE = d.base || 'epigrafi/';
+    ORIENTAMENTI = d.orientamenti || {};
+    $('#m-data').textContent = d.aggiornato || '-';
+  }catch(e){
+    $('#lista').innerHTML =
+      `<div class="niente">Non riesco a leggere <code>modelli.json</code>.<br><br>
+       Apri la pagina con <b>AVVIA VISUALIZZATORE.bat</b>: è quello che scansiona
+       la cartella e crea l'elenco.</div>`;
+    return;
+  }
+  // Gli orientamenti si leggono dal loro file, non dalla copia dentro
+  // modelli.json: quella viene riscritta solo dal .bat, e al ricaricamento
+  // della pagina avrebbe riportato indietro tutto quello che hai salvato.
+  try{
+    const ro = await fetch('orientamenti.json?t=' + Date.now());
+    if (ro.ok){
+      const d = await ro.json();
+      if (d && typeof d === 'object') ORIENTAMENTI = d;
+    }
+  }catch(e){ /* tengo quelli di modelli.json */ }
+  // e quello che il browser ha salvato da solo, quando il server non c'era
+  try{
+    for (const k of Object.keys(localStorage)){
+      if (!k.startsWith('giroLocale:')) continue;
+      const id = k.slice(11);
+      const q = JSON.parse(localStorage.getItem('giro:' + id) || 'null');
+      if (Array.isArray(q) && q.length === 4) ORIENTAMENTI[id] = { q, ok: true };
+    }
+  }catch(e){}
+
+  try{
+    // le firme dicono con quale orientamento e' stata disegnata ogni
+    // anteprima: servono solo a decidere quali rifare, cioe' in sviluppo
+    if (document.documentElement.dataset.dev === 'off') throw 0;
+    const rf = await fetch('anteprime/firme.json?t=' + Date.now());
+    FIRME = rf.ok ? await rf.json() : {};
+  }catch(e){ FIRME = {}; }
+  $('#m-num').textContent = MODELLI.length;
+  costruisciFiltri();
+  disegna();
+  disegnaAvviso();
+  avviaVetrina();
+}
+
+/* ─────────────────────────── vetrina della testata ──────────────────────
+   A destra del testo le epigrafi girano da sole, una dopo l'altra, senza
+   comandi: e' un fondale, non uno strumento. Parte dall'anteprima gia'
+   pronta, poi, se il computer regge, carica i pezzi piu' leggeri e li fa
+   girare davvero in tre dimensioni. */
+const VETRINA_GIRO = 16000;           // quanto dura un giro, in millisecondi
+const VETRINA_FOTO = 6500;            // quanto resta ferma un'immagine, se non c'e' il 3D
+let vetrina = null;
+
+function vetrinaCandidati(){
+  // sullo schermo piccolo si caricano solo i pezzi piu' leggeri
+  const tetto = (innerWidth < 760 ? 25 : 60) * 1048576;
+  const buoni = MODELLI.filter(m => !m.pesante && m.bytes && m.bytes < tetto);
+  return (buoni.length ? buoni : MODELLI.filter(m => !m.pesante))
+    .slice()
+    .sort((a, b) => a.bytes - b.bytes)
+    .slice(0, 6);
+}
+
+function avviaVetrina(){
+  if (!matchMedia('(min-width:760px)').matches) return;   // sul telefono non compare
+  const lista = vetrinaCandidati();
+  if (!lista.length){ $('#vetrina').style.display = 'none'; return; }
+  vetrina = { lista, i: 0, tela: null, t0: 0, timer: 0, gen: 0 };
+  mostraInVetrina(0);
+  programmaFoto();                       // le immagini girano comunque
+  if (!matchMedia('(prefers-reduced-motion:reduce)').matches) setTimeout(preparaTelaVetrina, 1200);
+}
+
+/* Senza 3D la vetrina resta viva lo stesso: le anteprime si succedono in
+   dissolvenza. Appena il 3D e' pronto prende il posto delle immagini. */
+function programmaFoto(){
+  if (!vetrina) return;
+  clearTimeout(vetrina.timer);
+  vetrina.timer = setTimeout(async () => {
+    if (!vetrina || vetrina.tela) return;
+    $('#vetrina').classList.add('cambio');
+    await new Promise(r => setTimeout(r, 480));
+    if (!vetrina || vetrina.tela) return;
+    mostraInVetrina((vetrina.i + 1) % vetrina.lista.length);
+    $('#vetrina').classList.remove('cambio');
+    programmaFoto();
+  }, VETRINA_FOTO);
+}
+
+function mostraInVetrina(i){
+  if (!vetrina) return;
+  const m = vetrina.lista[i];
+  vetrina.i = i;
+  $('#vetrina-t').textContent = m.titolo;
+  $('#vetrina-s').textContent = m.sede || '';
+  const foto = anteprimaDi(m);
+  if (foto) $('#vetrina-foto').src = foto;
+  else $('#vetrina-foto').removeAttribute('src');
+}
+
+async function preparaTelaVetrina(){
+  if (!vetrina || vetrina.tela) return;
+  const tela = $('#tela-vetrina');
+  let rend;
+  try{
+    rend = new THREE.WebGLRenderer({ canvas: tela, antialias: true, alpha: true, powerPreference: 'low-power' });
+  }catch(e){ return; }                       // niente WebGL: restano le foto
+  rend.setPixelRatio(Math.min(devicePixelRatio, 2));
+  rend.outputColorSpace = THREE.SRGBColorSpace;
+  const sc = new THREE.Scene();
+  const cam = new THREE.PerspectiveCamera(34, 1, .1, 4000);
+  const amb = new THREE.HemisphereLight(0xdce6f5, 0x2a2218, 1.15);
+  const key = new THREE.DirectionalLight(0xfff2df, 2.0);
+  const fil = new THREE.DirectionalLight(0xc9d6ea, 0.55);
+  key.position.set(.6, .9, 1.2);
+  fil.position.set(-.9, .2, .6);
+  sc.add(amb, key, fil);
+  vetrina.tela = { rend, sc, cam, perno: new THREE.Group(), pezzo: null, qBase: new THREE.Quaternion() };
+  sc.add(vetrina.tela.perno);
+  dimensionaVetrina();
+  addEventListener('resize', dimensionaVetrina);
+  giraVetrina();
+  portaInVetrina(vetrina.i);
+}
+
+function dimensionaVetrina(){
+  if (!vetrina || !vetrina.tela) return;
+  const piano = $('.vetrina-piano');
+  const l = piano.clientWidth, h = piano.clientHeight;
+  if (!l || !h) return;
+  vetrina.tela.rend.setSize(l, h, false);
+  vetrina.tela.cam.aspect = l / h;
+  vetrina.tela.cam.updateProjectionMatrix();
+  inquadraVetrina();
+}
+
+function inquadraVetrina(){
+  const t = vetrina && vetrina.tela;
+  if (!t || !t.pezzo) return;
+  const b = new THREE.Box3().setFromObject(t.perno);
+  const raggio = Math.max(
+    Math.abs(b.min.x), Math.abs(b.max.x),
+    Math.abs(b.min.y), Math.abs(b.max.y),
+    Math.abs(b.min.z), Math.abs(b.max.z)) || 1;
+  const fovV = THREE.MathUtils.degToRad(t.cam.fov);
+  const fovO = 2 * Math.atan(Math.tan(fovV / 2) * t.cam.aspect);
+  const dist = Math.max(raggio / Math.tan(fovV / 2), raggio / Math.tan(fovO / 2)) * 1.2;
+  t.cam.position.set(0, 0, dist);
+  t.cam.lookAt(0, 0, 0);
+  t.cam.near = Math.max(.1, dist - raggio * 4);
+  t.cam.far = dist + raggio * 8;
+  t.cam.updateProjectionMatrix();
+}
+
+/* Un solo caricamento alla volta: ogni chiamata prende un numero, e quando
+   finisce si tira indietro se nel frattempo ne e' partita un'altra. Senza
+   questo, due pezzi finivano in scena insieme, uno dentro l'altro, con
+   l'orientamento sbagliato. */
+async function portaInVetrina(i, conDissolvenza){
+  if (!vetrina || !vetrina.tela || vetrina.sospesa) return;
+  const t = vetrina.tela;
+  const m = vetrina.lista[i];
+  const gen = ++vetrina.gen;
+  const scaduto = () => !vetrina || !vetrina.tela || vetrina.gen !== gen;
+  vetrina.t0 = 0;
+  if (conDissolvenza){
+    $('#vetrina').classList.add('cambio');
+    await new Promise(r => setTimeout(r, 480));
+    if (scaduto()) return;
+  }
+  mostraInVetrina(i);
+  let root;
+  try{
+    if (m.epi){
+      root = await leggiCompatto(m.epi);
+    }else{
+      const op = m.obj.split('/');
+      const ofile = op.pop();
+      const odir = RADICE + (op.length ? encodeURI(op.join('/')) + '/' : '');
+      root = await new OBJLoader().setPath(odir).loadAsync(encodeURIComponent(ofile));
+    }
+    if (m.tex){
+      const tp = m.tex.split('/');
+      const tfile = tp.pop();
+      const tdir = RADICE + (tp.length ? encodeURI(tp.join('/')) + '/' : '');
+      const mappa = await new THREE.TextureLoader().setPath(tdir).loadAsync(encodeURIComponent(tfile));
+      mappa.colorSpace = THREE.SRGBColorSpace;
+      root.traverse(o => { if (o.isMesh) o.material = new THREE.MeshPhongMaterial({ map: mappa, shininess: 5, specular: 0x101010 }); });
+    }
+  }catch(e){
+    // questo pezzo non si carica: passo al prossimo, se nessun altro e' partito
+    if (scaduto()) return;
+    $('#vetrina').classList.remove('cambio');
+    setTimeout(() => { if (!scaduto()) portaInVetrina((i + 1) % vetrina.lista.length, true); }, 400);
+    return;
+  }
+  if (scaduto()){ svuotaAlbero(root); return; }   // e' arrivato dopo: lo butto
+  clearTimeout(vetrina.timer);                 // da qui in poi comanda il 3D
+  if (t.pezzo){ t.perno.remove(t.pezzo); svuotaAlbero(t.pezzo); }
+  t.perno.add(root);
+  t.pezzo = root;
+  root.traverse(o => { if (o.isMesh && !o.geometry.getAttribute('normal')) o.geometry.computeVertexNormals(); });
+  centra(root);
+  const qs = orientamentoSalvato(m);
+  t.perno.quaternion.copy(qs);
+  t.qBase.copy(qs);
+  t.perno.updateMatrixWorld(true);
+  inquadraVetrina();
+  t.rend.render(t.sc, t.cam);
+  vetrina.t0 = performance.now();
+  $('#vetrina').classList.remove('cambio');
+  $('#vetrina').classList.add('viva');
+}
+
+function svuotaAlbero(root){
+  root.traverse(o => {
+    if (!o.isMesh) return;
+    o.geometry && o.geometry.dispose();
+    const mm = Array.isArray(o.material) ? o.material : [o.material];
+    mm.forEach(mat => { if (!mat) return; mat.map && mat.map.dispose(); mat.dispose(); });
+  });
+}
+
+const _vAsseY = new THREE.Vector3(0, 1, 0);
+const _vPasso = new THREE.Quaternion();
+function giraVetrina(){
+  requestAnimationFrame(giraVetrina);
+  const t = vetrina && vetrina.tela;
+  if (!t || !t.pezzo || !vetrina.t0) return;
+  if (document.hidden || $('#vista').classList.contains('on')) return;
+  const frazione = (performance.now() - vetrina.t0) / VETRINA_GIRO;
+  _vPasso.setFromAxisAngle(_vAsseY, Math.min(frazione, 1) * Math.PI * 2);
+  t.perno.quaternion.copy(_vPasso).multiply(t.qBase);
+  t.rend.render(t.sc, t.cam);
+  if (frazione >= 1){
+    vetrina.t0 = 0;
+    portaInVetrina((vetrina.i + 1) % vetrina.lista.length, true);
+  }
+}
+
+function costruisciFiltri(){
+  const gruppi = [...new Set(MODELLI.map(m => m.gruppo))];
+  const box = $('#filtri');
+  if (gruppi.length < 2) return;
+  const frag = document.createDocumentFragment();
+  [['*','Tutti'], ...gruppi.map(g => [g, g])].forEach(([v,et]) => {
+    const b = document.createElement('button');
+    b.className = 'chip'; b.type = 'button'; b.textContent = et;
+    b.setAttribute('aria-pressed', v === gruppoAttivo);
+    b.onclick = () => {
+      gruppoAttivo = v;
+      box.querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', c === b));
+      disegna();
+    };
+    frag.appendChild(b);
+  });
+  box.insertBefore(frag, box.firstChild);
+}
+
+function anteprimaDi(m){
+  if (m.anteprima){
+    const q = (ORIENTAMENTI[m.id] || {}).q;
+    const firma = q ? q.map(v => (+v).toFixed(3)).join('_') : '0';
+    return encodeURI(m.anteprima) + '?v=' + encodeURIComponent(firma);
+  }
+  return null;
+}
+
+function disegna(){
+  const q = $('#cerca').value.trim().toLowerCase();
+  const lista = $('#lista');
+  lista.innerHTML = '';
+  const visti = MODELLI.filter(m =>
+    (gruppoAttivo === '*' || m.gruppo === gruppoAttivo) &&
+    (!q || (m.titolo + ' ' + m.variante + ' ' + m.id + ' ' + (m.isic || '')).toLowerCase().includes(q)));
+  $('#niente').hidden = visti.length > 0;
+
+  visti.forEach((m, k) => { m._n = k + 1; });
+  const gruppi = [...new Set(visti.map(m => m.gruppo))];
+  for (const g of gruppi){
+    const items = visti.filter(m => m.gruppo === g);
+    if (gruppi.length > 1 || MODELLI.some(m => m.gruppo !== g)){
+      const h = document.createElement('div');
+      h.className = 'sez-tit';
+      h.innerHTML = `<h2>${g}</h2><i></i><b>${items.length}</b>`;
+      lista.appendChild(h);
+    }
+    const gr = document.createElement('div');
+    gr.className = 'griglia';
+    for (const m of items) gr.appendChild(scheda(m));
+    lista.appendChild(gr);
+  }
+}
+
+function scheda(m){
+  const b = document.createElement('button');
+  b.className = 'pezzo'; b.type = 'button';
+  const src = anteprimaDi(m);
+  b.innerHTML = `
+    ${m.pesante ? '<span class="pesante-b">molto pesante</span>' : ''}
+    <div class="scena">${
+      src ? `<img src="${src}" alt="Anteprima di ${m.titolo}" loading="lazy" decoding="async">`
+          : `<div class="ghost">
+               <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M12 2.6 3 7.6v8.8l9 5 9-5V7.6z"/><path d="m3 7.6 9 5 9-5M12 12.6v8.8"/></svg>
+               <span>da aprire</span>
+             </div>`}</div>
+    <div class="dati">
+      <div class="dati-txt">
+        <h3>${m.titolo}</h3>
+        ${m.isic ? `<small class="isic">${m.isic}</small>`
+          : (m.variante && m.variante !== 'Scansione' ? `<small>${m.variante}</small>` : '')}
+      </div>
+      <span class="num">${String(m._n).padStart(2, '0')}</span>
+    </div>`;
+  b.addEventListener('click', () => apri(m));
+  return b;
+}
+
+/* ════════ ORIENTAMENTO: PROCEDURA UNA TANTUM ════════
+   Si passa in rassegna ogni pezzo una volta sola: lo giri come vuoi che
+   appaia, confermi, e non te lo chiede mai piu'. */
+let setup = null;
+
+function daConfermare(){ return MODELLI.filter(m => !confermato(m)); }
+
+const daRifare = () => MODELLI.filter(anteprimaVecchia);
+
+/* I nomi dei pezzi citati negli avvisi: per disteso fino a cinque, poi
+   il conto di quelli che restano. */
+function elencoNomi(lista, quanti = 5){
+  const nomi = lista.map(m => m.titolo);
+  if (nomi.length <= quanti) return nomi.join(' · ');
+  return nomi.slice(0, quanti).join(' · ') + ' e altri ' + (nomi.length - quanti);
+}
+
+function disegnaAvviso(){
+  const box = $('#avviso');
+  box.hidden = true; box.innerHTML = '';
+  if (!MODELLI.length || aggiornamento) return;
+  if (document.documentElement.dataset.dev === 'off') return;
+
+  const vecchie = daRifare();
+  if (vecchie.length && !sessionStorage.getItem('anteprimeChiuso')){
+    box.hidden = false;
+    box.innerHTML = `
+      <div class="txt">
+        <span class="badge-dev">sviluppo</span>
+        <b>Anteprime da aggiornare</b>
+        <span>${vecchie.length === 1 ? 'Una scheda mostra ancora' : vecchie.length + ' schede mostrano ancora'}
+          un'immagine disegnata con un orientamento diverso da quello che hai salvato
+          (<b class="nomi">${elencoNomi(vecchie)}</b>).
+          Le rifaccio io, una dopo l'altra: basta lasciare la pagina aperta.</span>
+      </div>
+      <div class="azioni">
+        <button class="bottone primo" id="av-agg">Aggiorna ora</button>
+        <button class="bottone" id="av-no2">Non adesso</button>
+      </div>`;
+    $('#av-agg').onclick = avviaAggiornamento;
+    $('#av-no2').onclick = () => { sessionStorage.setItem('anteprimeChiuso','1'); disegnaAvviso(); };
+    return;
+  }
+
+  const mancanti = daConfermare();
+  if (!mancanti.length || sessionStorage.getItem('avvisoChiuso')) return;
+  box.hidden = false;
+  box.innerHTML = `
+    <div class="txt">
+      <span class="badge-dev">sviluppo</span>
+      <b>Orientamento da confermare</b>
+      <span>${mancanti.length === 1 ? 'Un pezzo non è ancora stato impostato' :
+        mancanti.length + ' pezzi non sono ancora stati impostati'}:
+        <b class="nomi">${elencoNomi(mancanti)}</b>.
+        ${mancanti.length === 1 ? 'Lo giri' : 'Li passi in rassegna una volta sola: giri ciascuno'}
+        come vuoi vederlo, confermi, e non te lo si chiede più.</span>
+    </div>
+    <div class="azioni">
+      <button class="bottone primo" id="av-vai">Imposta ora</button>
+      <button class="bottone" id="av-no">Non adesso</button>
+    </div>`;
+  $('#av-vai').onclick = avviaSetup;
+  $('#av-no').onclick = () => { sessionStorage.setItem('avvisoChiuso','1'); disegnaAvviso(); };
+}
+
+/* ---- rifacimento automatico delle anteprime ----
+   Apre i pezzi uno dopo l'altro solo il tempo di ridisegnare la scheda
+   con l'orientamento salvato, senza chiedere niente. */
+let aggiornamento = null;
+
+async function avviaAggiornamento(){
+  const lista = daRifare();
+  if (!lista.length) return;
+  aggiornamento = { lista, i: 0, fatte: 0 };
+  const box = $('#avviso');
+  box.hidden = false;
+  box.innerHTML = `<div class="txt"><span class="badge-dev">sviluppo</span><b>Sto rifacendo le anteprime</b>
+     <span id="agg-stato">preparazione…</span></div>
+     <div class="azioni"><button class="bottone" id="agg-stop">Interrompi</button></div>`;
+  $('#agg-stop').onclick = () => { if (aggiornamento) aggiornamento.fermare = true; };
+
+  for (; aggiornamento.i < lista.length && !aggiornamento.fermare; aggiornamento.i++){
+    const m = lista[aggiornamento.i];
+    const st = $('#agg-stato');
+    if (st) st.textContent = `${aggiornamento.i + 1} di ${lista.length} · ${m.titolo}`;
+    try{
+      if (await caricaModello(m)){
+        if (await anteprimaCanonica(m)) aggiornamento.fatte++;
+      }
+    }catch(e){ console.error(e); }
+  }
+  const fatte = aggiornamento.fatte;
+  aggiornamento = null;
+  attivo = null; svuota();
+  disegna();
+  disegnaAvviso();
+  if (fatte) alert(fatte + (fatte === 1 ? ' anteprima rifatta.' : ' anteprime rifatte.'));
+}
+
+function avviaSetup(){
+  const lista = daConfermare();
+  if (!lista.length) return;
+  setup = { lista, i: 0 };
+  apri(lista[0]);
+}
+
+function mostraSetup(){
+  const on = !!setup && !!attivo;
+  $('#setup').classList.toggle('on', on);
+  if (!on) return;
+  $('#setup-testo').innerHTML =
+    `<b>${setup.i + 1} di ${setup.lista.length}</b>: gira il pezzo finché l'incisione
+     ti guarda dritta, poi conferma.`;
+}
+
+async function passoAvanti(conferma){
+  if (!setup) return;
+  if (conferma) await salvaOrientamento(true);
+  setup.i++;
+  if (setup.i >= setup.lista.length){
+    const n = setup.lista.length;
+    setup = null;
+    chiudi();
+    disegnaAvviso();
+    setTimeout(() => alert(n + (n === 1 ? ' pezzo impostato.' : ' pezzi impostati.') +
+      '\nL\'orientamento è salvato: non ti verrà più chiesto.'), 60);
+    return;
+  }
+  apri(setup.lista[setup.i]);
+}
+
+$('#setup-ok').onclick    = () => passoAvanti(true);
+$('#setup-salta').onclick = () => passoAvanti(false);
+$('#setup-esci').onclick  = () => { setup = null; chiudi(); };
+
+$('#cerca').addEventListener('input', disegna);
+$('#tasto-dev').addEventListener('click', () => {
+  const on = document.documentElement.dataset.dev !== 'off';
+  document.documentElement.dataset.dev = on ? 'off' : 'on';
+  try{ localStorage.setItem('dev', on ? 'off' : 'on'); }catch(e){}
+  applicaDev();
+  disegnaAvviso();
+});
+
+$('#tema').addEventListener('click', () => {
+  const nuovo = temaAttivo() === 'scuro' ? 'chiaro' : 'scuro';
+  document.documentElement.dataset.tema = nuovo;
+  try{ localStorage.setItem('tema', nuovo); }catch(e){}
+  applicaTema();
+});
+
+/* ════════ SCENA ════════ */
+const palco = $('#palco');
+const renderer = new THREE.WebGLRenderer({ antialias:true, preserveDrawingBuffer:true, alpha:true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+palco.insertBefore(renderer.domElement, palco.firstChild);
+
+const scena = new THREE.Scene();
+scena.background = new THREE.Color(
+  getComputedStyle(document.documentElement).getPropertyValue('--palco3d').trim() || '#08090b');
+const camera = new THREE.PerspectiveCamera(38, 1, .01, 8000);
+const ctrl = new OrbitControls(camera, renderer.domElement);
+ctrl.enableDamping = true; ctrl.dampingFactor = .075;
+ctrl.rotateSpeed = .9; ctrl.zoomSpeed = .95; ctrl.panSpeed = .85;
+ctrl.screenSpacePanning = true;
+
+const ambiente = new THREE.HemisphereLight(0xdce6f5, 0x2a2218, 1.1);
+const chiave   = new THREE.DirectionalLight(0xfff2df, 2.0);
+const riempi   = new THREE.DirectionalLight(0xc9d6ea, 0.5);
+scena.add(ambiente, chiave, chiave.target, riempi, riempi.target);
+
+let oggetto = null, raggio = 1, radente = false, azimut = 135;
+let misura = new THREE.Vector3(1,1,1);   // ingombro del pezzo (larghezza, altezza, spessore)
+
+/* Il pezzo vive dentro un perno: la camera orbita attorno alla scena,
+   il perno serve a ruotare l'oggetto su se stesso (raddrizzarlo, girarlo,
+   metterlo in giostra) senza toccare l'inquadratura. */
+const perno = new THREE.Group();
+scena.add(perno);
+const GIRO = Math.PI * 2;
+const DURATA_GIRO = 11000;                  // millisecondi per un giro di carosello
+let carosello = null;                       // dichiarato qui: il ciclo di disegno lo legge subito
+const _qBase = new THREE.Quaternion();
+const _qPasso = new THREE.Quaternion();
+const qBersaglio = new THREE.Quaternion();   // rotazione a cui il perno tende
+const _qGiro = new THREE.Quaternion();
+const _asseY = new THREE.Vector3(0,1,0);
+let giostra = false;
+let ultimoT = performance.now();
+
+function dimensiona(){
+  const w = palco.clientWidth, h = palco.clientHeight;
+  if (!w || !h) return;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h; camera.updateProjectionMatrix();
+}
+new ResizeObserver(dimensiona).observe(palco);
+addEventListener('resize', dimensiona);
+
+const _m = new THREE.Matrix4(), _v = new THREE.Vector3();
+function luci(){
+  const a = azimut * Math.PI / 180;
+  const el = radente ? 0.09 : 0.6;
+  _v.set(Math.cos(a) * Math.cos(el), Math.sin(el), Math.sin(a) * Math.cos(el));
+  _m.extractRotation(camera.matrixWorld);
+  const d = _v.applyMatrix4(_m).normalize();
+  chiave.position.copy(d).multiplyScalar(raggio * 8);
+  riempi.position.copy(d).multiplyScalar(-raggio * 8).applyAxisAngle(new THREE.Vector3(0,1,0), .7);
+  chiave.intensity   = radente ? 3.2 : 2.0;
+  riempi.intensity   = radente ? 0.18 : 0.5;
+  ambiente.intensity = radente ? 0.24 : 1.1;
+}
+function ruotaPerno(dt){
+  if (carosello) passoCarosello();
+  else if (giostra){
+    _qGiro.setFromAxisAngle(_asseY, 0.35 * dt);
+    qBersaglio.premultiply(_qGiro);
+  }
+  const k = 1 - Math.pow(0.0015, dt);      // avvicinamento morbido, indipendente dal frame rate
+  perno.quaternion.slerp(qBersaglio, k);
+}
+(function ciclo(t){
+  requestAnimationFrame(ciclo);
+  const dt = Math.min(0.05, (t - ultimoT) / 1000 || 0); ultimoT = t;
+  ruotaPerno(dt);
+  ctrl.update(); luci();
+  renderer.render(scena, camera);
+})(performance.now());
+
+/* ---- orientamento ----------------------------------------------------
+   REGOLA FONDAMENTALE: il modello si guarda come sta nel file, cioe' da +Z
+   con +Y in alto (la vista "front" dell'esportazione). L'unica cosa che
+   facciamo e' centrarlo nell'inquadratura: una traslazione, che non tocca
+   l'orientamento. Nessuna riorientazione automatica, mai.
+   Se un pezzo e' stato esportato storto lo si raddrizza a mano con i
+   pulsanti di rotazione, e la correzione viene salvata. */
+/* Il centro del pezzo non si prende dagli estremi della scatola: basta un
+   frammento di rumore rimasto in un angolo della scansione per spostarlo, e
+   il pezzo gira fuori asse. Si prende invece la mediana dei vertici lungo
+   ogni asse (scartando il 2% agli estremi), che il rumore non sposta. */
+function centroRobusto(root){
+  const assi = [[], [], []];
+  const v = new THREE.Vector3();
+  root.updateMatrixWorld(true);
+  root.traverse(o => {
+    if (!o.isMesh) return;
+    const pos = o.geometry.getAttribute('position');
+    if (!pos) return;
+    const passo = Math.max(1, Math.floor(pos.count / 40000));   // basta un campione
+    for (let i = 0; i < pos.count; i += passo){
+      v.fromBufferAttribute(pos, i).applyMatrix4(o.matrixWorld);
+      assi[0].push(v.x); assi[1].push(v.y); assi[2].push(v.z);
+    }
+  });
+  if (!assi[0].length) return new THREE.Box3().setFromObject(root).getCenter(new THREE.Vector3());
+  const medio = a => {
+    a.sort((x, y) => x - y);
+    const lo = a[Math.floor(a.length * .02)], hi = a[Math.floor(a.length * .98)];
+    return (lo + hi) / 2;
+  };
+  return new THREE.Vector3(medio(assi[0]), medio(assi[1]), medio(assi[2]));
+}
+
+function centra(root){
+  root.quaternion.identity();
+  root.position.set(0, 0, 0);
+  root.updateMatrixWorld(true);
+  root.position.sub(centroRobusto(root));
+  root.updateMatrixWorld(true);
+}
+
+/* L'ingombro si misura a partire dal perno, non dagli estremi della scatola:
+   il pezzo ruota attorno al perno, quindi quel che conta e' quanto sporge da
+   li'. Cosi' l'inquadratura resta buona per tutto il giro. */
+function ingombroDalPerno(){
+  const b = new THREE.Box3().setFromObject(perno);
+  return new THREE.Vector3(
+    2 * Math.max(Math.abs(b.min.x), Math.abs(b.max.x)),
+    2 * Math.max(Math.abs(b.min.y), Math.abs(b.max.y)),
+    2 * Math.max(Math.abs(b.min.z), Math.abs(b.max.z)));
+}
+
+function distanzaFrontale(aspetto){
+  const vfov = THREE.MathUtils.degToRad(camera.fov);
+  const hfov = 2 * Math.atan(Math.tan(vfov / 2) * aspetto);
+  return Math.max((misura.y / 2) / Math.tan(vfov / 2),
+                  (misura.x / 2) / Math.tan(hfov / 2)) * 1.13 + misura.z / 2;
+}
+
+function inquadra(){
+  if (!oggetto) return;
+  // ingombro del pezzo così com'è orientato adesso
+  misura = ingombroDalPerno();
+  raggio = misura.length() / 2 || 1;
+  // inquadra il vero ingombro del pezzo, tenendo conto anche della larghezza
+  // dello schermo: in verticale serve stare un po' più lontano
+  const vfov = THREE.MathUtils.degToRad(camera.fov);
+  const hfov = 2 * Math.atan(Math.tan(vfov / 2) * camera.aspect);
+  const d = Math.max(
+      (misura.y / 2) / Math.tan(vfov / 2),
+      (misura.x / 2) / Math.tan(hfov / 2)) * 1.13 + misura.z / 2;
+  camera.up.set(0, 1, 0);
+  camera.position.set(0, 0, d);
+  ctrl.target.set(0, 0, 0);
+  ctrl.minDistance = raggio * .12;
+  ctrl.maxDistance = raggio * 30;
+  camera.lookAt(0, 0, 0);
+  ctrl.update();
+}
+
+/* ---- materiali ---- */
+let conTex = true, conMaglia = false;
+const mappe = new Map();
+function perMat(fn){
+  oggetto && oggetto.traverse(o => { if (o.isMesh)
+    (Array.isArray(o.material) ? o.material : [o.material]).forEach(fn); });
+}
+function stile(){
+  perMat(mat => {
+    if (!mappe.has(mat)) mappe.set(mat, mat.map || null);
+    mat.map = conTex ? mappe.get(mat) : null;
+    mat.color.setHex(conTex ? 0xffffff : 0xd6cec1);
+    mat.wireframe = conMaglia;
+    mat.side = THREE.DoubleSide;
+    if ('shininess' in mat) mat.shininess = 6;
+    if (mat.specular) mat.specular.setHex(0x121212);
+    mat.needsUpdate = true;
+  });
+}
+
+/* ---- caricamento ---- */
+const CIRC = 2 * Math.PI * 24;
+function avanzamento(p){
+  $('#anello').style.strokeDashoffset = CIRC * (1 - p);
+  $('#perc').textContent = Math.round(p * 100) + '%';
+  if (carosello && carosello.caricando){
+    const b = $('#car-avanz');
+    if (b) b.style.width = (p * 100).toFixed(0) + '%';
+    $('#car-s').textContent = 'caricamento ' + Math.round(p * 100) + '%';
+  }
+}
+function svuota(){
+  if (!oggetto) return;
+  oggetto.traverse(o => { if (o.isMesh){
+    o.geometry.dispose();
+    (Array.isArray(o.material) ? o.material : [o.material]).forEach(mt => { mt.map && mt.map.dispose(); mt.dispose(); });
+  }});
+  perno.remove(oggetto); oggetto = null; mappe.clear();
+  giostra = false;
+  perno.quaternion.identity();
+  qBersaglio.identity();
+}
+
+let attivo = null;
+
+/* Carica il modello nella scena (senza toccare l'interfaccia) e gli applica
+   l'orientamento salvato. Restituisce true se è andata a buon fine. */
+/* Il formato compatto: i modelli, scritti una volta sola in numeri invece
+   che in testo, si aprono molte volte piu' in fretta perche' non c'e' nulla
+   da interpretare. Se il file non c'e' si torna al .obj di sempre. */
+async function leggiCompatto(percorso, versoAvanzamento){
+  const url = RADICE + percorso.split('/').map(encodeURIComponent).join('/');
+  const risposta = await fetch(url);
+  if (!risposta.ok) throw new Error('compatto non trovato');
+  const totale = +risposta.headers.get('content-length') || 0;
+  let dati;
+  if (risposta.body && totale){
+    const lettore = risposta.body.getReader();
+    const pezzi = []; let presi = 0;
+    for (;;){
+      const { done, value } = await lettore.read();
+      if (done) break;
+      pezzi.push(value); presi += value.length;
+      versoAvanzamento && versoAvanzamento(presi / totale, presi);
+    }
+    dati = new Uint8Array(presi);
+    let off = 0;
+    for (const pz of pezzi){ dati.set(pz, off); off += pz.length; }
+    dati = dati.buffer;
+  }else{
+    dati = await risposta.arrayBuffer();
+  }
+  const vista = new DataView(dati);
+  const magia = String.fromCharCode(vista.getUint8(0), vista.getUint8(1), vista.getUint8(2), vista.getUint8(3));
+  if (magia !== 'EPI1') throw new Error('formato compatto sconosciuto');
+  const nv = vista.getUint32(4, true), ni = vista.getUint32(8, true), bandiere = vista.getUint32(12, true);
+  let off = 16;
+  const pos = new Float32Array(dati, off, nv * 3); off += nv * 12;
+  let uv = null;
+  if (bandiere & 1){ uv = new Float32Array(dati, off, nv * 2); off += nv * 8; }
+  const idx = new Uint32Array(dati, off, ni);
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  if (uv) geo.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
+  geo.setIndex(new THREE.BufferAttribute(idx, 1));
+  geo.computeVertexNormals();
+  const gruppo = new THREE.Group();
+  gruppo.add(new THREE.Mesh(geo, new THREE.MeshPhongMaterial({ color: 0xbdb8ae, shininess: 4, specular: 0x101010 })));
+  return gruppo;
+}
+
+async function caricaModello(m){
+  attivo = m;
+  svuota();
+  try{
+    let materiali = null;
+    if (m.mtl){
+      const mp = m.mtl.split('/');
+      const file = mp.pop();
+      const dir = RADICE + (mp.length ? encodeURI(mp.join('/')) + '/' : '');
+      materiali = await new MTLLoader().setPath(dir).loadAsync(encodeURIComponent(file));
+      materiali.preload();
+    }
+    const op = m.obj.split('/');
+    const ofile = op.pop();
+    const odir = RADICE + (op.length ? encodeURI(op.join('/')) + '/' : '');
+    let root = null;
+    if (m.epi){
+      try{
+        root = await leggiCompatto(m.epi, (f, presi) => {
+          avanzamento(Math.min(.99, f));
+          $('#perc').textContent = Math.round(presi / 1048576) + ' MB';
+        });
+      }catch(e){ console.warn('compatto non usato', e); root = null; }
+    }
+    if (!root){
+      const ld = new OBJLoader().setPath(odir);
+      if (materiali) ld.setMaterials(materiali);
+      root = await ld.loadAsync(encodeURIComponent(ofile), ev => {
+        if (ev.total) avanzamento(Math.min(.99, ev.loaded / ev.total));
+        else $('#perc').textContent = Math.round(ev.loaded / 1048576) + ' MB';
+      });
+    }
+    if (attivo !== m) return false;
+
+    /* La texture la mettiamo sempre noi, quando il programma ne ha trovata
+       una accanto al pezzo: il .mtl uscito dallo scanner a volte nomina un
+       file che non esiste piu' (nomi accorciati, scansioni rifatte), e in
+       quel caso il modello resterebbe nero come se non ci fosse luce. */
+    if (m.tex){
+      const tp = m.tex.split('/');
+      const tfile = tp.pop();
+      const tdir = RADICE + (tp.length ? encodeURI(tp.join('/')) + '/' : '');
+      try{
+        const mappa = await new THREE.TextureLoader().setPath(tdir).loadAsync(encodeURIComponent(tfile));
+        mappa.colorSpace = THREE.SRGBColorSpace;
+        root.traverse(o => { if (o.isMesh){
+          o.material = new THREE.MeshPhongMaterial({ map: mappa, shininess: 6, specular: 0x121212 });
+        }});
+      }catch(e){
+        console.warn('texture non caricata', e);
+        root.traverse(o => { if (o.isMesh){
+          o.material = new THREE.MeshPhongMaterial({ color: 0xbdb8ae, shininess: 4, specular: 0x101010 });
+        }});
+      }
+    }
+
+    avanzamento(1);
+    $('#c-p').textContent = 'Preparazione della vista';
+    await new Promise(r => setTimeout(r, 30));
+
+    let tri = 0;
+    root.traverse(o => { if (o.isMesh){
+      if (!o.geometry.getAttribute('normal')) o.geometry.computeVertexNormals();
+      tri += (o.geometry.index ? o.geometry.index.count : o.geometry.getAttribute('position').count) / 3;
+    }});
+
+    oggetto = root;
+    perno.add(root);
+    centra(root);
+    giostra = false; $('#b-giostra').classList.remove('acceso');
+    const qs = orientamentoSalvato(m);     // identità = orientamento del file
+    perno.quaternion.copy(qs);
+    qBersaglio.copy(qs);
+    perno.updateMatrixWorld(true);
+    conTex = true; conMaglia = false;
+    $('#b-tex').classList.add('acceso'); $('#b-maglia').classList.remove('acceso');
+    stile();
+    inquadra();
+    $('#hud').textContent = Math.round(tri).toLocaleString('it-IT') + ' triangoli';
+    return true;
+  }catch(err){
+    console.error(err);
+    return false;
+  }
+}
+
+async function apri(m){
+  if (m.pesante && !confirm(
+      `"${m.titolo}" è un modello molto pesante.\n\n` +
+      `Il caricamento può richiedere diversi minuti e molta memoria; su telefono` +
+      ` con ogni probabilità non riuscirà.\n\nAprirlo comunque?`)) return;
+  fermaVetrina();
+  guidaSeServe();
+  $('#vista').classList.add('on');
+  $('#vista').setAttribute('aria-hidden', 'false');
+  document.body.classList.add('fermo');
+  $('#v-t').textContent = m.titolo;
+  $('#v-s').innerHTML = etichettaIsic(m);
+  $('#carico').classList.remove('via');
+  $('#c-t').textContent = 'Caricamento';
+  $('#c-t').classList.remove('rosso');
+  $('#c-p').textContent = 'Lettura del modello';
+  avanzamento(0);
+  dimensiona();
+
+  const ok = await caricaModello(m);
+  if (attivo !== m) return;
+  if (!ok){
+    $('#c-t').textContent = 'Modello non caricato';
+    $('#c-t').classList.add('rosso');
+    $('#c-p').innerHTML = `Non riesco a leggere <code>${m.obj}</code>. Controlla che il file
+      sia ancora nella cartella e che la pagina sia stata aperta con
+      <code>AVVIA VISUALIZZATORE.bat</code>.`;
+    return;
+  }
+  $('#carico').classList.add('via');
+  mostraSetup();
+}
+
+/* ════════ ANTEPRIMA DELLA SCHEDA ════════
+   Non è mai una fotografia di come stai guardando il pezzo: è un'immagine
+   costruita sempre allo stesso modo: inquadratura frontale, quadrata,
+   texture accesa, luce normale, fondo trasparente, con l'orientamento
+   che hai salvato. Viene rifatta SOLO quando quell'orientamento cambia,
+   così aprire un pezzo non la tocca mai. */
+async function anteprimaCanonica(m){
+  if (!oggetto) return false;
+  const LATO = 700;
+  const statoTex = conTex, statoMaglia = conMaglia, statoRadente = radente;
+  const pos = camera.position.clone(), quat = camera.quaternion.clone();
+  const asp = camera.aspect, fondo = scena.background;
+  const w = palco.clientWidth || 800, h = palco.clientHeight || 600;
+  let png = null;
+  try{
+    conTex = true; conMaglia = false; radente = false;
+    $('#b-tex').classList.add('acceso');
+    $('#b-maglia').classList.remove('acceso');
+    $('#b-luce').classList.remove('acceso');
+    stile();
+    perno.quaternion.copy(qBersaglio);
+    perno.updateMatrixWorld(true);
+    misura = ingombroDalPerno();
+    raggio = misura.length() / 2 || 1;
+
+    renderer.setSize(LATO, LATO, false);
+    camera.aspect = 1; camera.updateProjectionMatrix();
+    camera.up.set(0, 1, 0);
+    camera.position.set(0, 0, distanzaFrontale(1));
+    camera.lookAt(0, 0, 0);
+    camera.updateMatrixWorld(true);
+
+    scena.background = null;
+    renderer.setClearAlpha(0);
+    luci();
+    renderer.render(scena, camera);
+    png = renderer.domElement.toDataURL('image/png');
+  }catch(e){
+    console.error('anteprima non disegnata', e);
+  }finally{
+    scena.background = fondo;
+    renderer.setClearAlpha(1);
+    conTex = statoTex; conMaglia = statoMaglia; radente = statoRadente;
+    $('#b-tex').classList.toggle('acceso', conTex);
+    $('#b-maglia').classList.toggle('acceso', conMaglia);
+    $('#b-luce').classList.toggle('acceso', radente);
+    stile();
+    camera.position.copy(pos); camera.quaternion.copy(quat);
+    camera.aspect = asp; camera.updateProjectionMatrix();
+    renderer.setSize(w, h, false);
+    ctrl.update();
+  }
+  if (!png) return false;
+
+  const q = [qBersaglio.x, qBersaglio.y, qBersaglio.z, qBersaglio.w].map(v => +v.toFixed(8));
+  try{
+    const r = await fetch('api/anteprima', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ id: m.id, q, png })
+    });
+    if (!r.ok) throw new Error(await r.text());
+    m.anteprima = 'anteprime/' + m.id.replace(/[^A-Za-z0-9_.+-]/g, '_') + '.png';
+    FIRME[m.id] = q;
+    return true;
+  }catch(e){
+    console.error('anteprima non salvata', e);
+    return false;
+  }
+}
+
+function chiudi(){
+  $('#guida').classList.remove('on'); $('#guida').hidden = true;
+  attivo = null; svuota();
+  riprendiVetrina();
+  $('#setup').classList.remove('on');
+  $('#vista').classList.remove('on');
+  $('#vista').setAttribute('aria-hidden', 'true');
+  document.body.classList.remove('fermo');
+  if (document.fullscreenElement) document.exitFullscreen().catch(()=>{});
+  disegna();
+  disegnaAvviso();
+}
+
+/* ════════ CAROSELLO ════════
+   Mostra i pezzi uno dopo l'altro: ciascuno compie un giro completo su se
+   stesso, poi tocca al successivo, finché non li ha mostrati tutti. */
+
+function avviaCarosello(){
+  const lista = MODELLI.filter(m => !m.pesante);
+  if (!lista.length) return;
+  fermaVetrina();
+  carosello = { lista, i: 0, fermo: false };
+  $('#vista').classList.add('carosello-on');
+  $('#carosello').classList.add('on');
+  $('#velo').classList.add('chiuso');
+  mostraPezzoCarosello(true);
+}
+
+const attendi = ms => new Promise(r => setTimeout(r, ms));
+
+async function mostraPezzoCarosello(primo){
+  if (!carosello) return;
+  const m = carosello.lista[carosello.i];
+  /* Il giro si ferma subito, prima ancora della dissolvenza: finché il pezzo
+     nuovo non è in scena nessuno deve toccare l'orientamento, altrimenti il
+     giro del pezzo vecchio continua a scrivere su qBersaglio e il pezzo che
+     entra parte storto. */
+  carosello.t0 = 0;
+  carosello.caricando = true;
+  if (!primo){                       // si chiude sul pezzo che esce…
+    $('#velo').classList.add('chiuso');
+    await attendi(460);
+    if (!carosello || carosello.lista[carosello.i] !== m) return;
+  }
+  $('#car-t').textContent = m.titolo;
+  $('#car-s').innerHTML = etichettaIsic(m);
+  $('#car-conta').textContent = (carosello.i + 1) + ' / ' + carosello.lista.length;
+  $('#car-avanz').style.width = '0%';
+
+  $('#vista').classList.add('on');
+  $('#vista').setAttribute('aria-hidden', 'false');
+  document.body.classList.add('fermo');
+  $('#carico').classList.add('via');        // nessuna schermata: solo il palco
+  carosello.caricando = true;
+  avanzamento(0);
+  dimensiona();
+
+  const ok = await caricaModello(m);
+  if (!carosello || carosello.lista[carosello.i] !== m) return;
+  carosello.caricando = false;
+  $('#car-s').innerHTML = etichettaIsic(m);
+  $('#car-avanz').style.width = '0%';
+  renderer.render(scena, camera);     // il primo fotogramma prima di riaprire
+  await attendi(30);
+  $('#velo').classList.remove('chiuso');   // …e si riapre su quello che entra
+  if (!ok){ prossimoCarosello(1); return; }
+  /* il giro riparte dall'orientamento salvato per QUESTO pezzo */
+  qBersaglio.copy(perno.quaternion);
+  _qBase.copy(perno.quaternion);
+  carosello.t0 = performance.now() + 300;   // il giro parte a dissolvenza finita
+  carosello.pausa = 0;
+  carosello.dalPausa = carosello.fermo ? performance.now() : 0;
+  giostra = false;                  // il giro lo conduce il carosello
+}
+
+function prossimoCarosello(passo){
+  if (!carosello) return;
+  carosello.i = (carosello.i + passo + carosello.lista.length) % carosello.lista.length;
+  mostraPezzoCarosello();
+}
+
+/* Quando si apre un pezzo (o il carosello) la vetrina smette di caricare: il
+   browser deve avere tutta la macchina per il modello che stai guardando. */
+function fermaVetrina(){
+  if (!vetrina) return;
+  vetrina.gen++;                 // i caricamenti in corso si tirano indietro
+  clearTimeout(vetrina.timer);
+  vetrina.t0 = 0;
+  vetrina.sospesa = true;
+}
+
+function riprendiVetrina(){
+  if (!vetrina || !vetrina.sospesa) return;
+  vetrina.sospesa = false;
+  if (vetrina.tela) portaInVetrina(vetrina.i, false);
+  else programmaFoto();
+}
+
+function chiudiCarosello(){
+  carosello = null;
+  riprendiVetrina();
+  giostra = false;
+  $('#velo').classList.remove('chiuso');
+  $('#car-pausa').classList.remove('acceso');
+  $('#carosello').classList.remove('on');
+  $('#vista').classList.remove('carosello-on');
+  chiudi();
+}
+
+$('#tasto-carosello').onclick = avviaCarosello;
+$('#car-succ').onclick = () => prossimoCarosello(1);
+$('#car-prec').onclick = () => prossimoCarosello(-1);
+$('#car-esci').onclick = chiudiCarosello;
+$('#car-pausa').onclick = e => {
+  if (!carosello) return;
+  carosello.fermo = !carosello.fermo;
+  const ora = performance.now();
+  if (carosello.fermo) carosello.dalPausa = ora;
+  else if (carosello.dalPausa){ carosello.pausa += ora - carosello.dalPausa; carosello.dalPausa = 0; }
+  e.currentTarget.classList.toggle('acceso', carosello.fermo);
+  e.currentTarget.title = carosello.fermo ? 'Riprendi' : 'Pausa';
+};
+
+/* Il giro del carosello va a tempo, non a fotogrammi: dura sempre lo stesso,
+   che il computer sia veloce o lento. */
+function passoCarosello(){
+  if (!carosello || !oggetto || !carosello.t0) return;
+  if (carosello.fermo || carosello.caricando) return;
+  const trascorso = performance.now() - carosello.t0 - carosello.pausa;
+  const frazione = Math.max(0, trascorso) / DURATA_GIRO;
+  _qPasso.setFromAxisAngle(_asseY, Math.min(frazione, 1) * GIRO);
+  qBersaglio.copy(_qPasso).multiply(_qBase);
+  const b = $('#car-avanz');
+  if (b) b.style.width = Math.min(100, frazione * 100).toFixed(1) + '%';
+  if (frazione >= 1){ carosello.t0 = 0; prossimoCarosello(1); }
+}
+
+/* ════════ COMANDI ════════ */
+/* --- rotazione del pezzo su se stesso -------------------------------
+   L'orientamento scelto viene salvato su disco (orientamenti.json) dal
+   server locale, cosi' vale anche per l'anteprima nella galleria e resta
+   anche cambiando browser o computer. Se il salvataggio non e' possibile
+   si ripiega sulla memoria del browser. */
+const chiaveGiro = m => 'giro:' + m.id;
+
+function orientamentoSalvato(m){
+  const q = new THREE.Quaternion();
+  const daFile = ORIENTAMENTI[m.id] && ORIENTAMENTI[m.id].q;
+  if (Array.isArray(daFile) && daFile.length === 4){
+    q.set(daFile[0], daFile[1], daFile[2], daFile[3]);
+    return q;
+  }
+  try{
+    const v = JSON.parse(localStorage.getItem(chiaveGiro(m)) || 'null');
+    if (Array.isArray(v) && v.length === 4) q.set(v[0], v[1], v[2], v[3]);
+  }catch(e){}
+  return q;
+}
+
+async function salvaOrientamento(confermato){
+  // fuori dallo sviluppo girare un pezzo e' solo un modo di guardarlo: non
+  // tocca l'orientamento salvato ne' l'anteprima della galleria
+  if (document.documentElement.dataset.dev === 'off') return;
+  if (!attivo) return;
+  const q = [qBersaglio.x, qBersaglio.y, qBersaglio.z, qBersaglio.w].map(v => +v.toFixed(8));
+  const voce = { q };
+  if (confermato || (ORIENTAMENTI[attivo.id] || {}).ok) voce.ok = true;
+  ORIENTAMENTI[attivo.id] = voce;
+  try{ localStorage.setItem(chiaveGiro(attivo), JSON.stringify(q)); }catch(e){}
+  const m = attivo;
+  let suDisco = false;
+  try{
+    const r = await fetch('api/orientamento', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ id: m.id, q, ok: !!voce.ok })
+    });
+    suDisco = r.ok;
+  }catch(e){ suDisco = false; }
+
+  try{
+    if (suDisco) localStorage.removeItem('giroLocale:' + m.id);
+    else localStorage.setItem('giroLocale:' + m.id, '1');
+  }catch(e){}
+
+  if (!suDisco){
+    avvisa('Orientamento salvato solo in questo browser: la pagina non sta ' +
+           'parlando con il server locale. Aprila con AVVIA VISUALIZZATORE.bat.');
+    return;
+  }
+  // e subito l'anteprima rifatta con questo orientamento
+  const fatta = await anteprimaCanonica(m);
+  if (!fatta) avvisa('Orientamento salvato, ma l\'anteprima della scheda non è stata aggiornata.');
+}
+
+/* messaggio breve in sovrimpressione, senza bloccare */
+let _avvisoT = 0;
+function avvisa(testo){
+  let el = $('#messaggio');
+  if (!el){
+    el = document.createElement('div');
+    el.id = 'messaggio';
+    el.className = 'vetro';
+    document.getElementById('vista').appendChild(el);
+  }
+  el.textContent = testo;
+  el.classList.add('on');
+  clearTimeout(_avvisoT);
+  _avvisoT = setTimeout(() => el.classList.remove('on'), 6000);
+}
+const confermato = m => !!(ORIENTAMENTI[m.id] || {}).ok;
+
+/* Il codice I.Sicily, quando c'è, rimanda alla scheda del corpus. */
+const ISIC_BASE = 'https://isicily.classics.ox.ac.uk/inscription/';
+const SENZA_RETE = document.documentElement.dataset.offline === 'si';
+function etichettaIsic(m){
+  // nella copia per il museo, senza internet, il codice resta scritto ma non
+  // diventa un collegamento: un link che non si apre e' peggio di niente
+  if (m.isic && SENZA_RETE) return `<span class="isic">${m.isic}</span>`;
+  if (m.isic) return `<a class="isic" href="${ISIC_BASE}${encodeURIComponent(m.isic)}" target="_blank" rel="noopener">${m.isic}</a>`;
+  return m.variante && m.variante !== 'Scansione' ? m.variante : '';
+}
+
+/* L'anteprima è vecchia quando è stata disegnata con un orientamento
+   diverso da quello salvato adesso. */
+const arrotonda = q => q.map(v => +(+v).toFixed(4)).join(',');
+function anteprimaVecchia(m){
+  const q = (ORIENTAMENTI[m.id] || {}).q || [0, 0, 0, 1];
+  const f = FIRME[m.id];
+  return !f || arrotonda(f) !== arrotonda(q);
+}
+
+function gira(asse, gradi){
+  if (!oggetto) return;
+  if (giostra){ giostra = false; $('#b-giostra').classList.remove('acceso'); }
+  const q = new THREE.Quaternion().setFromAxisAngle(asse, THREE.MathUtils.degToRad(gradi));
+  qBersaglio.premultiply(q);               // ruota rispetto allo schermo
+  salvaOrientamento(true);                 // se ci hai messo mano, è impostato
+}
+const ASSE_X = new THREE.Vector3(1,0,0);
+const ASSE_Y = new THREE.Vector3(0,1,0);
+const ASSE_Z = new THREE.Vector3(0,0,1);
+
+/* Prende l'inquadratura attuale come fronte del pezzo: giri il modello con
+   il mouse finche' l'incisione ti guarda dritta, premi qui, e quel modo di
+   stare diventa il suo orientamento, nella pagina e nell'anteprima. */
+function fronteQui(){
+  if (!oggetto) return;
+  if (giostra) $('#b-giostra').click();
+  qBersaglio.copy(camera.quaternion).invert().multiply(perno.quaternion);
+  perno.quaternion.copy(qBersaglio);
+  perno.updateMatrixWorld(true);
+  inquadra();
+  salvaOrientamento(true);          // scelta deliberata: vale come conferma
+}
+
+$('#b-fronte').onclick = fronteQui;
+$('#b-su').onclick = () => gira(ASSE_X,  90);
+$('#b-giu').onclick = () => gira(ASSE_X, -90);
+$('#b-sx').onclick = () => gira(ASSE_Z,  90);
+$('#b-dx').onclick = () => gira(ASSE_Z, -90);
+$('#b-retro').onclick = () => gira(ASSE_Y, 180);
+$('#b-giostra').onclick = e => {
+  giostra = !giostra;
+  e.currentTarget.classList.toggle('acceso', giostra);
+  if (!giostra && !carosello){ qBersaglio.copy(perno.quaternion); salvaOrientamento(true); }
+};
+
+function raddrizzaAlFile(){
+  if (giostra) $('#b-giostra').click();
+  qBersaglio.identity();
+  salvaOrientamento();
+}
+
+$('#indietro').onclick = chiudi;
+$('#b-vista').onclick  = inquadra;
+$('#b-tex').onclick    = e => { conTex = !conTex; e.currentTarget.classList.toggle('acceso', conTex); stile(); };
+$('#b-maglia').onclick = e => { conMaglia = !conMaglia; e.currentTarget.classList.toggle('acceso', conMaglia); stile(); };
+$('#b-luce').onclick   = e => { radente = !radente; e.currentTarget.classList.toggle('acceso', radente); };
+$('#azimut').oninput   = e => { azimut = +e.target.value; };
+/* La guida si apre da sola la prima volta che si guarda un pezzo, e poi mai
+   piu': chi la vuole rivedere ha il "?" in alto. */
+const GUIDA_VISTA = 'guidaVista';
+function apriGuida(){ $('#guida').hidden = false; $('#guida').classList.add('on'); }
+function chiudiGuida(){
+  $('#guida').classList.remove('on'); $('#guida').hidden = true;
+  try{ localStorage.setItem(GUIDA_VISTA, '1'); }catch(e){}
+}
+function guidaSeServe(){
+  let gia = false;
+  try{ gia = localStorage.getItem(GUIDA_VISTA) === '1'; }catch(e){ gia = false; }
+  if (!gia && !carosello) apriGuida();
+}
+$('#aiuto').onclick = () => ($('#guida').hidden ? apriGuida() : chiudiGuida());
+$('#guida-ok').onclick = chiudiGuida;
+$('#guida').addEventListener('click', e => { if (e.target === $('#guida')) chiudiGuida(); });
+
+$('#pieno').onclick = () => {
+  document.fullscreenElement ? document.exitFullscreen()
+    : $('#vista').requestFullscreen && $('#vista').requestFullscreen().catch(()=>{});
+};
+addEventListener('keydown', e => {
+  if (!$('#vista').classList.contains('on')) return;
+  if (!$('#guida').hidden){
+    if (e.key === 'Escape' || e.key === ' ' || e.key === 'Enter'){ e.preventDefault(); chiudiGuida(); }
+    return;
+  }
+  const k = e.key.toLowerCase();
+  if (carosello){
+    if (e.key === 'Escape' && !document.fullscreenElement){ chiudiCarosello(); return; }
+    if (e.key === 'ArrowRight'){ prossimoCarosello(1); return; }
+    if (e.key === 'ArrowLeft'){ prossimoCarosello(-1); return; }
+    if (k === ' '){ e.preventDefault(); $('#car-pausa').click(); return; }
+  }
+  if (e.key === 'Escape' && !document.fullscreenElement) chiudi();
+  else if (k === 'r') inquadra();
+  else if (k === 't') $('#b-tex').click();
+  else if (k === 'l') $('#b-luce').click();
+  else if (k === 'm') $('#b-maglia').click();
+  else if (e.key === '[') $('#b-sx').click();
+  else if (e.key === ']') $('#b-dx').click();
+  else if (k === 'g') $('#b-retro').click();
+  else if (k === 'f') $('#b-fronte').click();
+  else if (e.key === ';') $('#b-su').click();
+  else if (e.key === "'") $('#b-giu').click();
+  else if (k === ' '){ e.preventDefault(); $('#b-giostra').click(); }
+  else if (e.key === '0') raddrizzaAlFile();   // torna all'orientamento del file
+});
+
+applicaTema();
+applicaDev();
+window.__perno = perno;            // per le prove automatiche
+Object.defineProperty(window, '__orient', { get: () => ORIENTAMENTI });
+Object.defineProperty(window, '__carosello', { get: () => carosello });
+Object.defineProperty(window, '__vetrina', { get: () => vetrina });
+Object.defineProperty(window, '__modelli', { get: () => MODELLI });
+carica();
+</script>
+</body>
+</html>
