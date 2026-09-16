@@ -1,6 +1,6 @@
 COME METTERE IL SITO ONLINE SU GITHUB PAGES
 ===========================================
-Preparato il 16/09/2026 alle 13:30.
+Preparato il 16/09/2026 alle 13:37.
 Cartella da caricare: "sito-github" (accanto a questo file).
 Peso complessivo: 689.8 MB.
 
@@ -59,7 +59,7 @@ i comandi qui sopra continuano a funzionare. Non spostare la cartella.
 
 COSA C'E' DENTRO
 ----------------
-  .git/              147 file, 374.0 MB
+  .git/              153 file, 374.1 MB
   anteprime/         32 file, 11.5 MB
   epigrafi/          63 file, 676.3 MB
   index.html         0.1 MB
