@@ -655,6 +655,58 @@ input[type=range]::-moz-range-thumb{width:14px;height:14px;border:none;border-ra
   .hero{padding-top:clamp(26px,5vw,36px)}
   .avviso{padding:20px}
 }
+/* ───────── schermi verticali e comando a dito ─────────
+   Il totem del museo e' uno schermo da 15,6" in verticale, 1080x1920, che si
+   tocca con le dita e non ha mouse ne' tastiera. Qui la testata torna a una
+   colonna sola, il testo cresce, e tutto quello che si preme diventa largo
+   abbastanza per un dito. */
+@media (orientation:portrait) and (min-width:700px){
+  .hero{min-height:auto;display:block;padding-block:clamp(40px,5vh,90px) clamp(24px,3vh,48px)}
+  .hero-in{grid-template-columns:1fr;gap:clamp(28px,4vh,56px)}
+  .vetrina{order:0;max-width:none}
+  .vetrina-piano{aspect-ratio:4/3;max-width:min(100%,46vh);margin-inline:auto}
+  .hero h1{font-size:clamp(52px,7.2vw,92px)}
+  .hero-testo p{font-size:clamp(18px,1.9vw,23px);max-width:64ch}
+  .meta{font-size:14px}
+  .griglia{grid-template-columns:repeat(auto-fill,minmax(min(300px,100%),1fr))}
+  .pezzo h3{font-size:22px}
+  .scheda-corpo{grid-template-columns:1fr}
+  .banda-in img{max-width:none}
+}
+
+/* dove si tocca con le dita: bersagli piu' grandi, niente scritte minuscole */
+@media (pointer:coarse){
+  .b{padding:14px 18px;font-size:14.5px}
+  .b.tondo{padding:14px}
+  .chip{padding:12px 20px;font-size:14px}
+  #indietro,#aiuto,#pieno{padding:14px}
+  .firme li{padding:14px 24px}
+  #cerca{font-size:16px}          /* sotto i 16px i browser ingrandiscono da soli */
+  .guida-carta{padding:clamp(24px,3.4vw,38px)}
+  .guida-gesti li{padding:13px 18px;font-size:15.5px}
+  .guida-tasti dt,.guida-tasti dd{font-size:15px}
+  .bottone{padding:14px 24px}
+}
+
+/* la barra raccolta vale anche sugli schermi verticali, dove lo spazio in
+   larghezza e' poco e i comandi andrebbero a capo tre volte */
+@media (orientation:portrait) and (max-width:1200px){
+  .solo-telefono{display:inline-flex}
+  .tb{
+    border-radius:30px;padding:10px 12px;gap:4px;
+    left:16px;right:16px;transform:none;max-width:none;justify-content:space-around;
+  }
+  .tb .divisore,.tb .etichetta-dev,.tb .regola,
+  .tb #b-sx,.tb #b-dx,.tb #b-su,.tb #b-giu,
+  .tb #b-retro,.tb #b-fronte{display:none}
+  .tb.aperta{justify-content:center;gap:6px;flex-wrap:wrap;padding-bottom:8px}
+  .tb.aperta .divisore{display:block;margin:4px}
+  .tb.aperta #b-sx,.tb.aperta #b-dx,.tb.aperta #b-su,.tb.aperta #b-giu{display:inline-flex}
+  .tb.aperta .regola{display:flex;order:9;flex-basis:100%;padding:8px 12px 2px}
+  :root:not([data-dev="off"]) .tb.aperta #b-retro,
+  :root:not([data-dev="off"]) .tb.aperta #b-fronte{display:inline-flex}
+}
+
 /* ─────────────── marchi e banda istituzionale ─────────────── */
 /* i marchi hanno due versioni: positiva su fondo chiaro, negativa su scuro */
 img.neg{display:none!important}
@@ -1025,9 +1077,13 @@ let FIRME = {};               // con quale orientamento è stata disegnata ogni 
 /* ════════ ELENCO DINAMICO ════════ */
 async function carica(){
   try{
-    const r = await fetch('modelli.json?t=' + Date.now());
-    if (!r.ok) throw new Error(r.status);
-    const d = await r.json();
+    // Nella copia per Android l'elenco e' gia' dentro la pagina (dati.js):
+    // cosi' la galleria si vede anche aprendo il file senza un server.
+    const d = window.__DATI || await (async () => {
+      const r = await fetch('modelli.json?t=' + Date.now());
+      if (!r.ok) throw new Error(r.status);
+      return r.json();
+    })();
     MODELLI = d.modelli || [];
     RADICE = d.base || 'epigrafi/';
     ORIENTAMENTI = d.orientamenti || {};
@@ -1043,6 +1099,7 @@ async function carica(){
   // modelli.json: quella viene riscritta solo dal .bat, e al ricaricamento
   // della pagina avrebbe riportato indietro tutto quello che hai salvato.
   try{
+    if (window.__DATI) throw 0;            // gli orientamenti sono gia' arrivati
     const ro = await fetch('orientamenti.json?t=' + Date.now());
     if (ro.ok){
       const d = await ro.json();
