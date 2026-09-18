@@ -1271,8 +1271,7 @@ async function portaInVetrina(i, conDissolvenza){
       const tp = m.tex.split('/');
       const tfile = tp.pop();
       const tdir = RADICE + (tp.length ? encodeURI(tp.join('/')) + '/' : '');
-      const mappa = await new THREE.TextureLoader().setPath(tdir).loadAsync(encodeURIComponent(tfile));
-      mappa.colorSpace = THREE.SRGBColorSpace;
+      const mappa = affinaTexture(await new THREE.TextureLoader().setPath(tdir).loadAsync(encodeURIComponent(tfile)));
       root.traverse(o => { if (o.isMesh) o.material = new THREE.MeshPhongMaterial({ map: mappa, shininess: 5, specular: 0x101010 }); });
     }
   }catch(e){
@@ -1557,9 +1556,35 @@ $('#tema').addEventListener('click', () => {
 
 /* ════════ SCENA ════════ */
 const palco = $('#palco');
+/* La fotografia sulla pietra si vedeva sfocata su alcuni pezzi: colpa dei
+   filtri di riduzione, che senza anisotropia impastano la texture appena la
+   superficie e' inclinata rispetto allo schermo. Qui ogni immagine viene
+   impostata al massimo che la scheda concede. */
+let MAX_ANISO = 1;
+function affinaTexture(t){
+  if (!t || t.__affinata) return t;
+  t.anisotropy = Math.max(t.anisotropy || 1, MAX_ANISO);
+  t.minFilter = THREE.LinearMipmapLinearFilter;
+  t.magFilter = THREE.LinearFilter;
+  t.generateMipmaps = true;
+  t.colorSpace = THREE.SRGBColorSpace;
+  t.needsUpdate = true;
+  t.__affinata = true;
+  return t;
+}
+function affinaMateriali(root){
+  root.traverse(o => {
+    if (!o.isMesh) return;
+    (Array.isArray(o.material) ? o.material : [o.material]).forEach(mt => {
+      if (mt && mt.map) affinaTexture(mt.map);
+    });
+  });
+}
+
 const renderer = new THREE.WebGLRenderer({ antialias:true, preserveDrawingBuffer:true, alpha:true });
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.outputColorSpace = THREE.SRGBColorSpace;
+MAX_ANISO = renderer.capabilities.getMaxAnisotropy();
 palco.insertBefore(renderer.domElement, palco.firstChild);
 
 const scena = new THREE.Scene();
@@ -1725,7 +1750,7 @@ function perMat(fn){
 function stile(){
   perMat(mat => {
     if (!mappe.has(mat)) mappe.set(mat, mat.map || null);
-    mat.map = conTex ? mappe.get(mat) : null;
+    mat.map = conTex ? affinaTexture(mappe.get(mat)) : null;
     mat.color.setHex(conTex ? 0xffffff : 0xd6cec1);
     mat.wireframe = conMaglia;
     mat.side = THREE.DoubleSide;
@@ -1853,8 +1878,7 @@ async function caricaModello(m){
       const tfile = tp.pop();
       const tdir = RADICE + (tp.length ? encodeURI(tp.join('/')) + '/' : '');
       try{
-        const mappa = await new THREE.TextureLoader().setPath(tdir).loadAsync(encodeURIComponent(tfile));
-        mappa.colorSpace = THREE.SRGBColorSpace;
+        const mappa = affinaTexture(await new THREE.TextureLoader().setPath(tdir).loadAsync(encodeURIComponent(tfile)));
         root.traverse(o => { if (o.isMesh){
           o.material = new THREE.MeshPhongMaterial({ map: mappa, shininess: 6, specular: 0x121212 });
         }});
@@ -1876,6 +1900,7 @@ async function caricaModello(m){
       tri += (o.geometry.index ? o.geometry.index.count : o.geometry.getAttribute('position').count) / 3;
     }});
 
+    affinaMateriali(root);        // vale anche per quelle arrivate dal .mtl
     oggetto = root;
     perno.add(root);
     centra(root);
