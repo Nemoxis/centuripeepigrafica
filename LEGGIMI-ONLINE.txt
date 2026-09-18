@@ -1,0 +1,73 @@
+COME METTERE IL SITO ONLINE SU GITHUB PAGES
+===========================================
+Preparato il 18/09/2026 alle 10:25.
+Cartella da caricare: "sito-github" (accanto a questo file).
+Peso complessivo: 689.8 MB.
+
+Accanto trovi anche "sito-museo": la stessa identica cosa, ma senza nessun
+collegamento verso l'esterno, per il computer della sala che non va in rete.
+Quella cartella NON si carica su GitHub: si copia sul computer e si apre con
+"APRI IL SITO.bat" che sta dentro. Le istruzioni sono nel suo LEGGIMI.
+
+Serve una volta sola: un conto su github.com e Git installato
+(https://git-scm.com/download/win, avanti fino alla fine).
+
+
+LA PRIMA VOLTA
+--------------
+1. Su github.com crea un deposito nuovo, per esempio "centuripeepigrafica".
+   Lascialo vuoto: niente README, niente licenza.
+
+2. Apri il Prompt dei comandi dentro la cartella "sito-github":
+   aprila in Esplora file, scrivi  cmd  nella barra dell'indirizzo, Invio.
+
+3. Incolla questi comandi, uno per riga:
+
+   git init
+   git branch -M main
+   git add -A
+   git commit -m "Prima versione del sito"
+   git remote add origin https://github.com/Nemoxis/centuripeepigrafica.git
+   git push -u origin main
+
+   (se un giorno cambi deposito, cambia quella riga)
+
+4. Su github.com, nel deposito: Settings > Pages >
+   Source: "Deploy from a branch" > Branch: main, cartella /(root) > Save.
+
+5. Dopo un paio di minuti il sito e' su
+   https://nemoxis.github.io/centuripeepigrafica/
+
+
+LE VOLTE SUCCESSIVE
+-------------------
+Lavori come sempre in locale, con il .bat di sempre. Quando vuoi pubblicare:
+
+1. rilancia "PREPARA SITO GITHUB.bat" (rifa' la cartella "sito-github");
+2. apri il Prompt dei comandi dentro "sito-github" e incolla:
+
+   git add -A
+   git commit -m "Aggiornamento del 18/09/2026"
+   git push
+
+In un minuto il sito online e' aggiornato.
+
+ATTENZIONE: la cartella "sito-github" viene rifatta da zero a ogni
+preparazione, ma la sottocartella nascosta ".git" resta al suo posto, quindi
+i comandi qui sopra continuano a funzionare. Non spostare la cartella.
+
+
+COSA C'E' DENTRO
+----------------
+  .git/              161 file, 374.1 MB
+  anteprime/         32 file, 11.5 MB
+  epigrafi/          63 file, 676.3 MB
+  index.html         0.1 MB
+  lib/               7 file, 1.3 MB
+  marchi/            8 file, 0.6 MB
+  modelli.json       0.0 MB
+  orientamenti.json  0.0 MB
+
+I modelli sono nel formato compatto ".epi" (piu' o meno un terzo del .obj):
+la pagina li apre direttamente, online non serve nient'altro.
+

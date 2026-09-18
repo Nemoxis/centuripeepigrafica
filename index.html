@@ -328,7 +328,16 @@ main{flex:1;padding-bottom:80px}
   display:block;margin-top:4px;font:500 12px/1.4 var(--sans);color:var(--inchiostro-3);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
-.pezzo small.isic{color:var(--verde);font-weight:700}
+/* il codice I.Sicily porta alla scheda del corpus: sottolineato, con una
+   freccina, cosi' si capisce che si puo' premere */
+.pezzo small.isic{color:var(--verde);font-weight:700}   /* nella scheda si preme la tessera intera */
+a.isic{
+  color:var(--verde);font-weight:700;text-decoration:none;
+  border-bottom:1.5px solid currentColor;padding-bottom:1px;
+}
+a.isic::after{content:" \2197";font-weight:700;letter-spacing:-.02em}
+a.isic:hover{color:var(--inchiostro);border-bottom-color:currentColor}
+span.isic{color:var(--verde);font-weight:700}   /* copia senza internet */
 .num{
   flex:0 0 auto;font:700 11px/1 var(--sans);color:var(--inchiostro-3);
   font-variant-numeric:tabular-nums;padding-top:5px;
@@ -451,9 +460,11 @@ body.fermo{overflow:hidden}
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .v-nome small{display:block;margin-top:2px;font:500 12px/1.4 var(--sans);color:var(--tavolo-ink-2);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.v-nome small a.isic{color:var(--verde);text-decoration:none;font-weight:700}
-.v-nome small a.isic:hover{text-decoration:underline}
-.car-nome small a.isic{color:var(--verde);text-decoration:none;font-weight:700}
+.v-nome small a.isic,.car-nome small a.isic{
+  color:var(--verde);font-weight:700;text-decoration:none;
+  border-bottom:1.5px solid currentColor;
+}
+.v-nome small a.isic:hover{color:var(--tavolo-ink)}
 .spazio{flex:1}
 
 .tb{
@@ -672,10 +683,12 @@ img.neg{display:none!important}
 }
 .finanziamento b{font-weight:700;color:var(--inchiostro)}
 .finanziamento .cup{white-space:nowrap}
-.finanziamento a{color:inherit;text-decoration:none;border-bottom:1.5px solid var(--verde)}
-.finanziamento a:hover{color:var(--verde)}
+/* qui i collegamenti non si mettono in mostra: il testo deve leggersi come
+   una dichiarazione, non come un elenco di link. Si scoprono passandoci sopra. */
+.finanziamento a{color:inherit;text-decoration:none;border-bottom:1px solid transparent}
+.finanziamento a:hover{color:var(--verde);border-bottom-color:currentColor}
 
-.banda{border-top:1px solid var(--filo);background:var(--carta-3);margin-top:clamp(56px,9vw,120px)}
+.banda{border-top:1px solid var(--filo);background:var(--carta-3);margin-top:clamp(40px,6vw,88px)}
 .banda-in{padding-block:clamp(18px,2.4vw,26px)}
 .banda-in img{display:block;width:100%;max-width:1020px;margin-inline:auto;height:auto}
 .marchio-testo{
@@ -1669,7 +1682,8 @@ function stile(){
 const CIRC = 2 * Math.PI * 24;
 function avanzamento(p){
   $('#anello').style.strokeDashoffset = CIRC * (1 - p);
-  $('#perc').textContent = Math.round(p * 100) + '%';
+  const cento = p * 100;
+  $('#perc').textContent = (cento >= 99.95 ? '100' : cento.toFixed(cento < 10 ? 1 : 0)) + '%';
   if (carosello && carosello.caricando){
     const b = $('#car-avanz');
     if (b) b.style.width = (p * 100).toFixed(0) + '%';
@@ -1715,7 +1729,9 @@ async function leggiCompatto(percorso, versoAvanzamento){
     for (const pz of pezzi){ dati.set(pz, off); off += pz.length; }
     dati = dati.buffer;
   }else{
+    versoAvanzamento && versoAvanzamento(.5);
     dati = await risposta.arrayBuffer();
+    versoAvanzamento && versoAvanzamento(.99);
   }
   const vista = new DataView(dati);
   const magia = String.fromCharCode(vista.getUint8(0), vista.getUint8(1), vista.getUint8(2), vista.getUint8(3));
@@ -1756,18 +1772,17 @@ async function caricaModello(m){
     let root = null;
     if (m.epi){
       try{
-        root = await leggiCompatto(m.epi, (f, presi) => {
-          avanzamento(Math.min(.99, f));
-          $('#perc').textContent = Math.round(presi / 1048576) + ' MB';
-        });
+        root = await leggiCompatto(m.epi, f => avanzamento(Math.min(.995, f)));
       }catch(e){ console.warn('compatto non usato', e); root = null; }
     }
     if (!root){
       const ld = new OBJLoader().setPath(odir);
       if (materiali) ld.setMaterials(materiali);
       root = await ld.loadAsync(encodeURIComponent(ofile), ev => {
-        if (ev.total) avanzamento(Math.min(.99, ev.loaded / ev.total));
-        else $('#perc').textContent = Math.round(ev.loaded / 1048576) + ' MB';
+        // se il server non dichiara la lunghezza, il peso del file lo sa
+        // l'elenco: la percentuale resta comunque una percentuale vera
+        const totale = ev.total || m.bytes || 0;
+        if (totale) avanzamento(Math.min(.995, ev.loaded / totale));
       });
     }
     if (attivo !== m) return false;
@@ -1830,6 +1845,16 @@ async function apri(m){
       `Il caricamento può richiedere diversi minuti e molta memoria; su telefono` +
       ` con ogni probabilità non riuscirà.\n\nAprirlo comunque?`)) return;
   fermaVetrina();
+  /* Si entra sempre in uno stato pulito: se prima girava il carosello, qui
+     dev'essere gia' spento, insieme alla giostra. Cosi' il pezzo che apri
+     parte dall'orientamento salvato e sta fermo. */
+  carosello = null;
+  giostra = false;
+  $('#b-giostra').classList.remove('acceso');
+  $('#carosello').classList.remove('on');
+  $('#vista').classList.remove('carosello-on');
+  $('#velo').classList.remove('chiuso');
+  _qBase.identity();
   guidaSeServe();
   $('#vista').classList.add('on');
   $('#vista').setAttribute('aria-hidden', 'false');
