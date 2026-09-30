@@ -1,0 +1,46 @@
+plugins { id 'com.android.application' }
+
+android {
+    namespace 'org.changes.centuripe'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "org.changes.centuripe"
+        minSdk 24
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+    }
+
+    // i modelli e le immagini sono gia' compressi: lasciarli intatti rende
+    // il pacchetto piu' veloce da costruire e da leggere
+    androidResources {
+        noCompress += ['epi', 'jpg', 'jpeg', 'png', 'woff2']
+    }
+
+    buildTypes {
+        release { minifyEnabled false }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+/* Le librerie di Android si portano dietro pezzi di Kotlin di versioni
+   diverse, e da Kotlin 1.8 i vecchi "kotlin-stdlib-jdk7/jdk8" sono confluiti
+   dentro "kotlin-stdlib": tenerli tutti insieme fa trovare due volte le
+   stesse classi. Qui se ne dichiara una sola versione e si escludono i due
+   vecchi pacchetti. */
+configurations.configureEach {
+    resolutionStrategy {
+        force 'org.jetbrains.kotlin:kotlin-stdlib:1.9.24'
+    }
+    exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk7'
+    exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk8'
+}
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'androidx.webkit:webkit:1.11.0'
+}
