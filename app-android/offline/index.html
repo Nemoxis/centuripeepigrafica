@@ -749,6 +749,19 @@ img.neg{display:none!important}
 .marchio-spoke img{height:clamp(30px,3.4vw,40px)}
 .marchio-unict img{height:clamp(38px,4.4vw,52px)}
 .marchi-sep{width:1px;align-self:stretch;min-height:36px;background:var(--filo-2)}
+a.marchio{transition:opacity .18s ease}
+a.marchio:hover{opacity:.62}
+.marchio-archeomatica img{height:clamp(20px,2.4vw,30px)}
+.marchio-isicily img{height:clamp(32px,3.7vw,46px);border-radius:6px}
+@media (min-width:621px){
+  /* i cinque marchi stanno su una riga sola: si rimpiccioliscono invece di andare a capo */
+  .marchi{flex-wrap:nowrap;gap:clamp(12px,2vw,30px)}
+  .marchio-changes img{height:clamp(26px,3.6vw,48px)}
+  .marchio-spoke img{height:clamp(20px,2.8vw,37px)}
+  .marchio-unict img{height:clamp(26px,3.6vw,48px)}
+  .marchio{flex:0 1 auto;min-width:0}
+  .marchio img{max-width:100%}
+}
 
 .finanziamento{
   margin:18px 0 0;max-width:78ch;font-size:14.5px;line-height:1.65;
@@ -1503,6 +1516,15 @@ img.neg{display:none!important}
         <img class="pos" src="marchi/unict.png?v=45" alt="Università degli Studi di Catania">
         <img class="neg" src="marchi/unict-neg.png?v=45" alt="" aria-hidden="true">
       </span>
+      <span class="marchi-sep" aria-hidden="true"></span>
+      
+        <img class="pos" src="marchi/unict-archeomatica.png?v=49" alt="Archeomatica, Università di Catania">
+        <img class="neg" src="marchi/unict-archeomatica-neg.png?v=49" alt="" aria-hidden="true">
+      
+      <span class="marchi-sep" aria-hidden="true"></span>
+      
+        <img src="marchi/isicily.jpg?v=49" alt="I.Sicily">
+      
     </div>
 
     <p class="finanziamento">
